@@ -1,0 +1,37 @@
+
+<div class="container mt-3">
+    <div class="row">
+      <div class="col-12">
+        <div class="header-bar">
+          <h2 class="mb-0">TASK STATUS</h2>
+        </div>
+      </div>
+    </div>
+  
+    <table class="table mt-3 table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Task Name</th>
+          <th scope="col">Start Date</th>
+          <th scope="col">End Date</th>
+          <th scope="col">Status</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of tasks">
+          <td>{{ task.name }}</td>
+          <td>{{ task.startDate | date }}</td>
+          <td>{{ task.endDate | date }}</td>
+          <td>{{ getStatusText(task.status) }}</td>
+          <td>
+            <div class="d-flex gap-2">
+                <button class="btn btn-warning btn-sm" (click)="editTask(task)">Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

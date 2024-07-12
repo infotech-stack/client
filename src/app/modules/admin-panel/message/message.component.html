@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="row mt-1">
+    <div class="col-12">
+      <div class="header-bar">
+        <h2 class="mb-0">MESSAGE </h2>
+      </div>
+    </div>
+  </div>
+    <div class="row mt-2">
+      <div class="col-md-8 offset-md-2">
+        <form [formGroup]="communicationForm" >
+          <div class="mb-3">
+            <label for="recipients" class="form-label fw-bold">Whom to send</label>
+            <select id="recipients" class="form-select" formControlName="recipients">
+                <option value="">Select employee</option>
+                <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+              </select>
+              <div *ngIf="formControls['recipients'].invalid && (formControls['recipients'].dirty || formControls['recipients'].touched)" class="text-danger">
+                <div *ngIf="formControls['recipients'].errors?.['required']">EmployeeName is required.</div>
+              </div>
+          </div>
+  
+          <div class="mb-3">
+            <label for="message" class="form-label fw-bold">Message</label>
+            <textarea id="message" class="form-control" rows="5" formControlName="message"></textarea>
+            <div *ngIf="formControls['message'].invalid && (formControls['message'].dirty || formControls['message'].touched)" class="text-danger">
+                <div *ngIf="formControls['message'].errors?.['required']">Message is required.</div>
+              </div>
+          </div>
+  
+          <div class="mb-3">
+            <label for="attachment" class="form-label fw-bold">Attachment</label>
+            <input id="attachment" type="file" class="form-control" formControlName="attachment">
+          </div>
+  
+          <button type="submit" class="btn btn-primary" (click)="sendMessage()">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  

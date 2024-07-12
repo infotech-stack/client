@@ -1,0 +1,105 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 mt-1">
+      <div class="header-bar">
+        <h2 class="mb-0">EMPLOYEE ATTENDANCE</h2>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <div class="row mb-3 mt-3">
+      <div class="col-md-3">
+        <label for="employeename" class="form-label fw-bold">Employee Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="employeename"
+          formControlName="name"
+        />
+        <div *ngIf="formControls['name'].invalid && formControls['name'].touched" class="text-danger">
+          Employee name is required.
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label for="startDate" class="form-label fw-bold">Start Date</label>
+        <input
+          id="startDate"
+          type="date"
+          class="form-control"
+          formControlName="startDate"
+        />
+        <div *ngIf="formControls['startDate'].invalid && formControls['startDate'].touched" class="text-danger">
+          Start date is required.
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label for="endDate" class="form-label fw-bold">End Date</label>
+        <input
+          id="endDate"
+          type="date"
+          class="form-control"
+          formControlName="endDate"
+        />
+        <div *ngIf="formControls['endDate'].invalid && formControls['endDate'].touched" class="text-danger">
+          End date is required.
+        </div>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100" [disabled]="employeeForm.invalid">Search</button>
+      </div>
+    </div>
+  </form>
+  
+  <div class="container mt-3">
+    <div class="card">
+      <div class="card-header d-flex justify-content-end">
+        <button mat-icon-button (click)="viewPDF()">
+          <mat-icon>remove_red_eye</mat-icon>
+        </button>
+        <button mat-icon-button (click)="generatePDF()">
+          <mat-icon>receipt</mat-icon>
+        </button>
+        <button mat-icon-button (click)="convertToPDF()">
+          <mat-icon>download</mat-icon>
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div *ngIf="filteredAttendance.length === 0" class="text-center mb-3">
+              <p>No records found.</p>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-bordered" id="content">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>Cabin No</th>
+                    <th>Login Date</th>
+                    <th>Logout Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let employee of filteredAttendance">
+                    <td>{{ employee.employee_name }}</td>
+                    <td>{{ employee.employee_designation }}</td>
+                    <td>{{ employee.cabinNo }}</td>
+                    <td>{{ employee.login_date_time }}</td>
+                    <td>{{ employee.logout_date_time || 'N/A' }}</td>
+                  </tr>
+                  <tr *ngIf="filteredAttendance.length === 0">
+                    <td colspan="5" class="text-center">No records found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+</div>

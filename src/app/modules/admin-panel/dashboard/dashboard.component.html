@@ -1,0 +1,113 @@
+<div class="flex flex-col">
+  <mat-toolbar class="flex justify-between bg-primary">
+    <div class="flex gap-2">
+      <div class="flex justify-center items-center bg-white p-1 rounded-2">
+        <img src="assets/image/rks infotech png logo.png" class="w-[150px]" alt="rkslogo">
+      </div>
+      <div class="flex justify-center items-center">
+        <button mat-icon-button class="" aria-label="Example icon-button with menu icon" (click)="toggleSidenav()">
+          <mat-icon class="text-white ">menu</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="flex justify-center items-center">
+      <span class="text-white hidden md:inline"> RKS TASK MANAGEMENT SYSTEM</span>
+    </div>
+    <div class="flex  gap-2">
+      <div>
+        <img src="../../../../assets/image/user.png" alt="" style="width: 40px;height: 40px;border-radius: 50%;">
+      </div>
+      <div>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+          <mat-icon class="text-white">arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>dialpad</mat-icon>
+            <span>{{username}}</span>
+          </button>
+          <button mat-menu-item >
+            <mat-icon>voicemail</mat-icon>
+            <span>{{userRole}}</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>logout</mat-icon>
+            <span routerLink="/login" >Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+      <!-- <div>
+        <button mat-icon-button>
+          <mat-icon class="text-white">logout</mat-icon>
+        </button>
+      </div> -->
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container  class="h-[calc(100vh_-_37px)] overflow-hidden">
+    <mat-sidenav #sidenav style="width: 250px;" 
+    [mode]="mobileQuery.matches ? 'over' : 'side'"
+    [opened]="mobileQuery.matches ? false : true"
+    >
+      <mat-nav-list >
+      @for(item of filterAccess ;track item){
+ 
+    <a
+    routerLink="{{ item.link }}"
+    mat-list-item
+    (isActiveChange)=" sideOnclickClose()"
+    routerLinkActive="active"
+    class="text-white "
+    >
+  <div class="flex gap-3" >
+    <mat-icon class="text-red-500"> {{ item.icon }}</mat-icon>
+    <span class="text-white">{{ item.label }}</span>
+  </div>
+  </a>
+ 
+      }
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+    <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  <!-- <mat-sidenav-container class="h-screen-3/4 overflow-hidden">
+    <mat-sidenav #sidenav style="width: 210px;" class="bg-primary"
+                 [mode]="mobileQuery.matches ? 'over' : 'side'"
+                 [opened]="mobileQuery.matches ? false : true">
+      <mat-nav-list>
+        <!-- Loop through main menu items 
+        <ng-container *ngFor="let item of list; let i = index">
+          <ng-container *ngIf="!(item.subItems && item.subItems.length)">
+            <!-- If there are no subItems
+            <a routerLink="{{ item.link }}" mat-list-item (click)="sideOnclickClose()" routerLinkActive="active"
+               class="text-white">
+              <span class="text-white">{{ item.label }}</span>
+            </a>
+          </ng-container>
+          <ng-container *ngIf="item.subItems && item.subItems.length">
+            <!-- If there are subItems 
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title class="text-white">{{ item.label }}</mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-nav-list>
+                <!-- Loop through subItems 
+                <a *ngFor="let subItem of item.subItems; let j = index"
+                   routerLink="{{ subItem.link }}" mat-list-item (click)="sideOnclickClose()"
+                   routerLinkActive="active" class="text-primary">
+                  <span class="text-primary">{{ subItem.label }}</span>
+                </a>
+              </mat-nav-list>
+            </mat-expansion-panel>
+          </ng-container>
+        </ng-container>
+      </mat-nav-list>
+    </mat-sidenav>
+  
+    <mat-sidenav-content>
+      <h1>hello</h1>
+    </mat-sidenav-content>
+  </mat-sidenav-container> -->
+</div>

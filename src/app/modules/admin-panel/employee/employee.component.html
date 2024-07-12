@@ -1,0 +1,161 @@
+<div class="container">
+  <div class="row mt-1">
+    <div class="col-12">
+      <div class="header-bar">
+        <h2 class="mb-0">ADD NEW EMPLOYEE</h2>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <form [formGroup]="employeeForm">
+            <div class="row">
+              <div class="col-12 col-md-4 mb-3">
+                <label for="name" class="form-label fw-bold">Name</label>
+                <input type="text" id="name" class="form-control" formControlName="name">
+                <div *ngIf="formControls['name'].invalid && (formControls['name'].dirty || formControls['name'].touched)" class="text-danger">
+                  <div *ngIf="formControls['name'].errors?.['required']">Name is required.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="designation" class="form-label fw-bold">Designation</label>
+                <input type="text" id="designation" class="form-control" formControlName="designation">
+                <div *ngIf="formControls['designation'].invalid && (formControls['designation'].dirty || formControls['designation'].touched)" class="text-danger">
+                  <div *ngIf="formControls['designation'].errors?.['required']">Designation is required.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="cabinNo" class="form-label fw-bold">Cabin Number</label>
+                <input type="text" id="cabinNo" class="form-control" formControlName="cabinNo">
+                <div *ngIf="formControls['cabinNo'].invalid && (formControls['cabinNo'].dirty || formControls['cabinNo'].touched)" class="text-danger">
+                  <div *ngIf="formControls['cabinNo'].errors?.['required']">Cabin Number is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-4 mb-3">
+                <label for="dateOfJoining" class="form-label fw-bold">Date of Joining</label>
+                <input type="date" id="dateOfJoining" class="form-control" formControlName="dateOfJoining">
+                <div *ngIf="formControls['dateOfJoining'].invalid && (formControls['dateOfJoining'].dirty || formControls['dateOfJoining'].touched)" class="text-danger">
+                  <div *ngIf="formControls['dateOfJoining'].errors?.['required']">Date of Joining is required.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="contactNo" class="form-label fw-bold">Contact Number</label>
+                <input type="text" id="contactNo" class="form-control" formControlName="contactNo">
+                <div *ngIf="formControls['contactNo'].invalid && (formControls['contactNo'].dirty || formControls['contactNo'].touched)" class="text-danger">
+                  <div *ngIf="formControls['contactNo'].errors?.['required']">Contact Number is required.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="address" class="form-label fw-bold">Address</label>
+                <textarea id="address" class="form-control" formControlName="address" ></textarea>
+                <div *ngIf="formControls['address'].invalid && (formControls['address'].dirty || formControls['address'].touched)" class="text-danger">
+                  <div *ngIf="formControls['address'].errors?.['required']">Address is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="password" class="form-label fw-bold">Password</label>
+                <input type="password" class="form-control" id="password" formControlName="password">
+                <div *ngIf="formControls['password'].invalid && (formControls['password'].dirty || formControls['password'].touched)" class="text-danger">
+                  <div *ngIf="formControls['password'].errors?.['required']">Password is required.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="confirmPassword" class="form-label fw-bold">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword">
+                <div *ngIf="formControls['confirmPassword'].invalid && (formControls['confirmPassword'].dirty || formControls['confirmPassword'].touched)" class="text-danger">
+                  <div *ngIf="formControls['confirmPassword'].errors?.['required']">Confirm Password is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="access" class="form-label fw-bold">Select The Access</label>
+                <mat-form-field appearance="fill" class="w-100">
+                  <mat-select id="access" formControlName="access" multiple>
+                    <mat-option *ngFor="let access of EmployeeAccess" [value]="access">
+                      {{access}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="role" class="form-label fw-bold">Select The Role</label>
+                <mat-form-field appearance="fill" class="w-100">
+                  <mat-select id="role" formControlName="role" multiple>
+                    <mat-option *ngFor="let role of EmployeeRole" [value]="role">
+                      {{role}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 text-center">
+                <button type="submit" *ngIf="addBtnFlag" class="btn btn-primary" (click)="insertEmployee()">Add New Employee</button>
+                <button type="submit" *ngIf="editBtnFlag" class="btn btn-warning" (click)="updateEmployee()">Edit Employee</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  </div>
+  
+  <div class="container mt-3">
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">UserName</th>
+            <th scope="col">Designation</th>
+            <th scope="col">CabinNo</th>
+            <th scope="col">DateOfJoining</th>
+            <th scope="col">ContactNo</th>
+            <th scope="col">Address</th>
+            <th scope="col">Role</th>
+            <th scope="col">Access</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of employeeList; let i = index">
+            <td scope="row">{{ i + 1 }}</td>
+            <td>{{ item.employee_name }}</td>
+            <td>{{ item.employee_designation }}</td>
+            <td>{{ item.employee_cabinno }}</td>
+            <td>{{ item.employee_dateofjoin | date }}</td> <!-- Assuming employee_dateofjoin is a Date object -->
+            <td>{{ item.employee_contactno }}</td>
+            <td>{{ item.employee_address }}</td>
+            <td>
+              <ul>
+                <li *ngFor="let role of item.employee_role">{{ role }}</li>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <li *ngFor="let access of item.employee_access">{{ access }}</li>
+              </ul>
+            </td>
+            <td>
+              <div class="d-flex gap-2">
+                <button class="btn btn-warning" (click)="editUser(item)">Edit</button>
+                <button class="btn btn-danger" (click)="deleteUser(item)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  

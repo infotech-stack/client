@@ -1,0 +1,48 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiService } from '../../../shared/services/api/api.service';
+import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss'
+})
+export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
+  invalidFlag:boolean=false;
+  constructor(private formBuilder: FormBuilder,private _router:Router ,private _apiService:ApiService,private _dataSharing:DataSharingService) {
+    this.loginForm = this.formBuilder.group({
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+  }
+  ngOnInit() {
+   
+  }
+  onSubmit() {
+    let loginObj = {
+      employee_name: this.loginForm.controls['username'].value,
+      employee_password: this.loginForm.controls['password'].value
+    };
+    console.log(loginObj);
+  
+    this._apiService.loginmethod(loginObj.employee_name, loginObj.employee_password).subscribe({
+      next: (res) => {
+        console.log(res);
+        if (res?.data && Object.keys(res?.data).length > 0) {
+          this._dataSharing.sendEmployeeDetails(res?.data);
+          this._router.navigate(['/dashboard']);
+        } else {
+          this.invalidFlag = true;
+        }
+      },
+      error: () => {
+        this.invalidFlag = true;
+      }
+    });
+  }
+  
+  
+}
