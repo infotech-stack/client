@@ -6,22 +6,29 @@
     <!-- Form content -->
     <div class="relative z-10 px-8 py-4">
       <div class="flex justify-center py-4">
-        <img src="assets/image/rks infotech png logo.png" alt="Logo" class=" w-24 h-24">
+        <img src="assets/image/rks infotech png logo.png" alt="Logo" class="w-full h-auto">
       </div>
       <form [formGroup]="loginForm" class="mb-4">
+        <!-- First Row: Username -->
         <div class="mb-4">
-          <label for="user" class="block text-gray-700 text-sm font-bold mb-2">Email address</label>
+          <label for="user" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
           <input type="text" id="user" formControlName="username" placeholder="Enter username" class="form-control">
         </div>
+        
+        <!-- Second Row: Password -->
         <div class="mb-6">
           <label for="inputPassword" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
           <input type="password" id="inputPassword" formControlName="password" placeholder="Password" class="form-control">
         </div>
-        <div *ngIf="invalidFlag" class="mb-4">
-          <span class="text-red-500">Invalid Username & Password</span>
-        </div>
+        
+        <!-- Third Row: Submit Button -->
         <div class="flex items-center justify-between">
           <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full transition duration-300 ease-in-out transform hover:scale-105" (click)="onSubmit()">Login</button>
+        </div>
+        
+        <!-- Invalid Flag Message -->
+        <div *ngIf="invalidFlag" class="mt-4">
+          <span class="text-red-500">Invalid Username & Password</span>
         </div>
       </form>
     </div>

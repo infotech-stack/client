@@ -8,33 +8,42 @@
   </div>
   <div class="container mt-5">
     <div class="card">
-     
       <div class="card-body">
         <form [formGroup]="taskForm" (ngSubmit)="taskAssign()">
           <div class="row">
+            <!-- First Row: Project Name and Start Date -->
             <div class="col-12 col-md-6">
-              <!-- Left Column -->
               <div class="mb-3">
                 <label for="projectName" class="form-label fw-bold">Project Name</label>
                 <input type="text" id="projectName" class="form-control" formControlName="projectName">
-                <div *ngIf="formControls['projectName'].invalid && (formControls['projectName'].dirty || formControls['projectName'].touched)" class="text-danger">
-                  <div *ngIf="formControls['projectName'].errors?.['required']">Project Name is required.</div>
+                <div *ngIf="taskForm.controls['projectName'].invalid && (taskForm.controls['projectName'].dirty || taskForm.controls['projectName'].touched)" class="text-danger">
+                  <div *ngIf="taskForm.controls['projectName'].errors?.['required']">Project Name is required.</div>
                 </div>
               </div>
+            </div>
+            <div class="col-12 col-md-6">
               <div class="mb-3">
                 <label for="startDate" class="form-label fw-bold">Start Date</label>
                 <input type="date" id="startDate" class="form-control" formControlName="startDate">
-                <div *ngIf="formControls['startDate'].invalid && (formControls['startDate'].dirty || formControls['startDate'].touched)" class="text-danger">
-                  <div *ngIf="formControls['startDate'].errors?.['required']">Start Date is required.</div>
+                <div *ngIf="taskForm.controls['startDate'].invalid && (taskForm.controls['startDate'].dirty || taskForm.controls['startDate'].touched)" class="text-danger">
+                  <div *ngIf="taskForm.controls['startDate'].errors?.['required']">Start Date is required.</div>
                 </div>
               </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <!-- Second Row: End Date and Project Status -->
+            <div class="col-12 col-md-6">
               <div class="mb-3">
                 <label for="endDate" class="form-label fw-bold">End Date</label>
                 <input type="date" id="endDate" class="form-control" formControlName="endDate">
-                <div *ngIf="formControls['endDate'].invalid && (formControls['endDate'].dirty || formControls['endDate'].touched)" class="text-danger">
-                  <div *ngIf="formControls['endDate'].errors?.['required']">End Date is required.</div>
+                <div *ngIf="taskForm.controls['endDate'].invalid && (taskForm.controls['endDate'].dirty || taskForm.controls['endDate'].touched)" class="text-danger">
+                  <div *ngIf="taskForm.controls['endDate'].errors?.['required']">End Date is required.</div>
                 </div>
               </div>
+            </div>
+            <div class="col-12 col-md-6">
               <div class="mb-3">
                 <label for="projectStatus" class="form-label fw-bold">Project Status</label>
                 <select id="projectStatus" class="form-select" formControlName="projectStatus">
@@ -43,49 +52,32 @@
                   <option value="Completed">Completed</option>
                   <option value="Pending">Pending</option>
                 </select>
-                <div *ngIf="formControls['projectStatus'].invalid && (formControls['projectStatus'].dirty || formControls['projectStatus'].touched)" class="text-danger">
-                  <div *ngIf="formControls['projectStatus'].errors?.['required']">Project Status is required.</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <!-- Right Column -->
-              <div class="mb-3">
-                <label for="taskName" class="form-label fw-bold">Task Name</label>
-                <input type="text" id="taskName" class="form-control" formControlName="taskName">
-                <div *ngIf="formControls['taskName'].invalid && (formControls['taskName'].dirty || formControls['taskName'].touched)" class="text-danger">
-                  <div *ngIf="formControls['taskName'].errors?.['required']">Task Name is required.</div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="fileAttachment" class="form-label fw-bold">File Attachment</label>
-                <input type="file" id="fileAttachment" class="form-control" formControlName="fileAttachment" accept="*" multiple (change)="onFileChange($event)">
-                <div *ngIf="formControls['fileAttachment'].invalid && (formControls['fileAttachment'].dirty || formControls['fileAttachment'].touched)" class="text-danger">
-                  <div *ngIf="formControls['fileAttachment'].errors?.['required']">File Attachment is required.</div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="deadline" class="form-label fw-bold">Deadline</label>
-                <input type="date" id="deadline" class="form-control" formControlName="deadline">
-                <div *ngIf="formControls['deadline'].invalid && (formControls['deadline'].dirty || formControls['deadline'].touched)" class="text-danger">
-                  <div *ngIf="formControls['deadline'].errors?.['required']">Deadline is required.</div>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="assignTo" class="form-label fw-bold">Assign To</label>
-                <select id="assignTo" class="form-select" formControlName="assignTo">
-                  <option value="">Select employee</option>
-                  <option *ngFor="let employee of employees" [value]="employee.id">{{ employee.name }}</option>
-                </select>
-                <div *ngIf="formControls['assignTo'].invalid && (formControls['assignTo'].dirty || formControls['assignTo'].touched)" class="text-danger">
-                  <div *ngIf="formControls['assignTo'].errors?.['required']">Assign To is required.</div>
+                <div *ngIf="taskForm.controls['projectStatus'].invalid && (taskForm.controls['projectStatus'].dirty || taskForm.controls['projectStatus'].touched)" class="text-danger">
+                  <div *ngIf="taskForm.controls['projectStatus'].errors?.['required']">Project Status is required.</div>
                 </div>
               </div>
             </div>
           </div>
+  
+          <div class="row">
+            <!-- Third Row: Assign To (Employee Selection) -->
+            <div class="col-12">
+              <div class="mb-3">
+                <label for="assignTo" class="form-label fw-bold">Assign To</label>
+                <select id="assignTo" class="form-select" (change)="getEmployeeId($event)" formControlName="assignTo">
+                  <option value="0">All</option>
+                  <option *ngFor="let employee of employees" [value]="employee.empId">{{ employee.employee_name }}</option>
+                </select>
+                <div *ngIf="taskForm.controls['assignTo'].invalid && (taskForm.controls['assignTo'].dirty || taskForm.controls['assignTo'].touched)" class="text-danger">
+                  <div *ngIf="taskForm.controls['assignTo'].errors?.['required']">Assign To is required.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
           <div class="row justify-content-center">
             <div class="col-12 text-center">
-              <button type="submit" class="btn btn-primary" (click)="taskAssign()">Assign Task</button>
+              <button type="submit" class="btn btn-primary">Assign Task</button>
             </div>
           </div>
         </form>
@@ -93,8 +85,11 @@
     </div>
   </div>
   
+  
+  
+  
     <div class="container mt-3">
-      <div class="card">
+      <div class="card" style="  border-top:  3px solid blue;">
        
         <div class="card-body">
           <div class="table-responsive">

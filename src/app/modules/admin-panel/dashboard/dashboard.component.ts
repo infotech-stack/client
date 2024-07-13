@@ -142,15 +142,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     })
   }
   ngOnDestroy(): void {
-    this._apiService.logoutMethod(this.employeeId).subscribe({
-      next: (res) => {
-        console.log(res);
+    // this._apiService.logoutMethod(this.employeeId).subscribe({
+    //   next: (res) => {
+    //     console.log(res);
 
-      },
-      error: (err) => {
-        throw err;
-      }
-    })
+    //   },
+    //   error: (err) => {
+    //     throw err;
+    //   }
+    // })
   }
   //* ----------------------------  APIs Methods  --------------------------*//
 

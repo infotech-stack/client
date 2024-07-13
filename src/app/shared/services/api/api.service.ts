@@ -46,14 +46,17 @@ export class ApiService {
     return this.http.delete<any>(`${environment.removeEmployee}?empId=${empId}`);
   }
  //EMPLOYTEE ATTENDANCE
- getEmployeeAttendance(){
+  getEmployeeAttendance(){
   return this.http.get<any>(`${environment.getEmployeeAttendance}`);
 
 
  
-}
-  //TASK ASSSIGN
-  assignTask(formData:any){
-  return  this.http.post<any>(`${environment.apiBaseUrl}`,formData);
   }
+  //TASK ASSSIGN
+    // assignTask(formData:FormData){
+    // return  this.http.post<any>(`${environment.assignTask}`,formData);
+    // }
+    taskAssignToEmployee(employeeData:any){
+     return this.http.post<any>(`${environment.assignTask}`,employeeData);
+    }
 }

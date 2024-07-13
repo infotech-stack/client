@@ -13,4 +13,7 @@ export const environment = {
     logout:`http://localhost:3000/api/employee-register/logout`,
     //EMPLOYEE ATTENDANCE
     getEmployeeAttendance:`http://localhost:3000/api/employee-register/employee-attendance`,
+    //TASK ASSIGN
+    assignTask:`http://localhost:3000/api/employee-register/task-assign-to-employee`
+
 };
