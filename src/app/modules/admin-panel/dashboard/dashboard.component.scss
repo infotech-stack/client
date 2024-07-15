@@ -1,3 +1,23 @@
 mat-sidenav{
     background-color: rgb(96 165 250);
 }
+/* Style the menu items */
+button.mat-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    color: #333; /* Adjust text color */
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button.mat-menu-item:hover {
+    background-color: #f0f0f0; /* Light background on hover */
+  }
+  
+  /* Icon styles */
+  mat-icon {
+    margin-right: 8px; /* Add space between icon and text */
+    font-size: 20px; /* Adjust icon size */
+  }
+  

@@ -14,6 +14,8 @@ export const environment = {
     //EMPLOYEE ATTENDANCE
     getEmployeeAttendance:`http://localhost:3000/api/employee-register/employee-attendance`,
     //TASK ASSIGN
-    assignTask:`http://localhost:3000/api/employee-register/task-assign-to-employee`
-
+    gettaskByRole:`http://localhost:3000/api/employee-register/get-Tasks-ByRole`,
+    assignTask:`http://localhost:3000/api/employee-register/task-assign-to-employee`,
+    updatetask:`http://localhost:3000/api/employee-register/update-task`,
+    deleteTask:`http://localhost:3000/api/employee-register/delete-task`
 };

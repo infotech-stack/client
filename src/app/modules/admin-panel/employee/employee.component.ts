@@ -154,6 +154,7 @@ export class EmployeeComponent implements OnInit{
     this.editBtnFlag=true;
     this.addBtnFlag=false;
 
+  console.log(this.employeeForm);
   
   }
   deleteUser(item: any) {

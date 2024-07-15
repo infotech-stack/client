@@ -50,6 +50,7 @@ export class EmployeeAttendenceComponent implements OnInit {
     // filteredEmployees:any;
     filteredAttendance: any[] = [];
     @ViewChild('content', { static: false }) content!: ElementRef;
+  filteredEmpId: any;
     //* -----------------------  Variable Declaration  -----------------------*//
   
     //* ---------------------------  Constructor  ----------------------------*//
@@ -81,7 +82,6 @@ export class EmployeeAttendenceComponent implements OnInit {
         }
       })
     }
- 
     //* --------------------------  Public methods  --------------------------*//
     get formControls() { return this.employeeForm.controls; }
     applyFilters() {
@@ -107,6 +107,8 @@ export class EmployeeAttendenceComponent implements OnInit {
     onSubmit() {
       if (this.employeeForm.valid) {
         const filterCriteria = this.employeeForm.value;
+
+        this.filterEmpIdByName();
         this.filterAttendance(filterCriteria);
       }
     }
@@ -120,7 +122,18 @@ export class EmployeeAttendenceComponent implements OnInit {
       return isNameMatch && isStartDateMatch && isEndDateMatch;
     });
   }
-
+ filterEmpIdByName() {
+    const name = this.employeeForm.controls['name'].value;
+    name.trim().toLowerCase();
+    const employee = this.employeeAttendance.find((emp: { employee_name: string; }) => emp.employee_name.toLowerCase() === name);
+    if (employee) {
+      this.filteredEmpId = employee.empId;
+      console.log(this.filteredEmpId,'id');
+      
+    } else {
+      this.filteredEmpId = undefined;
+    }
+  }
   private isDateMatch(dateTimeString: string, dateFilter: string): boolean {
     if (!dateTimeString) {
       return false;
@@ -166,8 +179,7 @@ export class EmployeeAttendenceComponent implements OnInit {
     ]);
   }
   viewPDF() {
-    const documentDefinition:any = this.getDocumentDefinition(this.filteredAttendance);
-    pdfMake.createPdf(documentDefinition).open(); // Opens in new tab for viewing
+    window.print();
   }
 
   generatePDF() {

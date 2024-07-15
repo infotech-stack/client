@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class MessageComponent implements OnInit {
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+
   }
   //* --------------------------  Start  -----------------------------------*//
   

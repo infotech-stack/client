@@ -6,65 +6,115 @@
       </div>
     </div>
   </div>
-  <div class="row row-cols-1 row-cols-md-3 g-4  mt-2">
+  <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
     <!-- In Progress Tasks -->
     <div class="col">
-      <div class="card bg-white shadow-sm">
+      <div class="card bg-white shadow-sm border-primary">
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between mb-4">
-            <h2 class="card-title text-lg fw-bold">In Progress Tasks</h2>
+            <h2 class="card-title text-lg fw-bold text-primary">In Progress Tasks</h2>
             <span class="text-primary">
               <mat-icon class="text-primary">description</mat-icon>
             </span>
           </div>
-          <p class="text-4xl fw-bold text-primary">5</p> <!-- Replace with actual count -->
+          <p class="text-4xl fw-bold text-primary">{{taskCounts.inProgress}}</p>
         </div>
       </div>
     </div>
-  
+
     <!-- Completed Tasks -->
     <div class="col">
-      <div class="card bg-white shadow-sm">
+      <div class="card bg-white shadow-sm border-success">
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between mb-4">
-            <h2 class="card-title text-lg fw-bold">Completed Tasks</h2>
+            <h2 class="card-title text-lg fw-bold text-success">Completed Tasks</h2>
             <span class="text-success">
               <mat-icon class="text-success">check_circle</mat-icon>
             </span>
           </div>
-          <p class="text-4xl fw-bold text-success">10</p> <!-- Replace with actual count -->
+          <p class="text-4xl fw-bold text-success">{{taskCounts.done}}</p>
         </div>
       </div>
     </div>
-  
-    <!-- New Tasks -->
+
+    <!-- Pending Tasks -->
     <div class="col">
-      <div class="card bg-white shadow-sm">
+      <div class="card bg-white shadow-sm border-warning">
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between mb-4">
-            <h2 class="card-title text-lg fw-bold">New Tasks</h2>
+            <h2 class="card-title text-lg fw-bold text-warning">Pending Tasks</h2>
             <span class="text-warning">
               <mat-icon class="text-warning">attach_file</mat-icon>
             </span>
           </div>
-          <p class="text-4xl fw-bold text-warning">3</p> <!-- Replace with actual count -->
+          <p class="text-4xl fw-bold text-warning">{{taskCounts.pending}}</p>
         </div>
       </div>
     </div>
-  
+
     <!-- All Tasks -->
     <div class="col">
-      <div class="card bg-white shadow-sm">
+      <div class="card bg-white shadow-sm border-secondary">
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between mb-4">
-            <h2 class="card-title text-lg fw-bold">All Tasks</h2>
+            <h2 class="card-title text-lg fw-bold text-purple">All Tasks</h2>
             <span class="text-purple">
               <mat-icon class="text-purple">list_alt</mat-icon>
             </span>
           </div>
-          <p class="text-4xl fw-bold text-purple ">18</p> <!-- Replace with actual count -->
+          <p class="text-4xl fw-bold text-purple">{{taskCounts.all}}</p>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Row for Table and Bar Chart -->
+  <div class="row mt-4">
+    <!-- Table Column -->
+    <div class="col-12">
+      <div class="card bg-white shadow-sm border-dark">
+        <div class="card-body">
+          <h2 class="card-title text-lg fw-bold text-dark">Task Details</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>S.N</th>
+                <th>Employee Name</th>
+                <th>Task Name</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let empDetails of taskDetails;let i=index">
+                <tr *ngFor="let task of empDetails.taskDetails">
+                  <td>{{i+1}}</td>
+                  <td>{{ empDetails.employee_name }}</td> <!-- Employee Name -->
+                  <td>{{ task.project_name }}</td> <!-- Project Name -->
+                  <td>{{ task.start_date }}</td> <!-- Start Date -->
+                  <td>{{ task.end_date }}</td> <!-- End Date -->
+                  <td>{{ task.project_status }}</td> <!-- Project Status -->
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+ 
+ 
+   <!-- Bar Chart Column -->
+   <div class="col-12 mt-4">
+    <div class="card bg-white shadow-sm border-info">
+      <div class="card-body">
+        <h2 class="card-title text-lg fw-bold text-info">Task Status Distribution</h2>
+        <canvas #taskStatusChart></canvas>
+      </div>
+    </div>
+  </div>
   </div>
 </div>
