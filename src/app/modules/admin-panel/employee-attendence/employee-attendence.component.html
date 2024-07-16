@@ -15,6 +15,7 @@
           class="form-control"
           id="employeename"
           formControlName="name"
+          placeholder="employee name"
         />
         <div *ngIf="formControls['name'].invalid && formControls['name'].touched" class="text-danger">
           Employee name is required.
@@ -51,10 +52,10 @@
   </form>
   
   <div class="container mt-3">
-    <div class="card" style="border-top: 3px solid blue;">
+    <div class="card">
       <div class="card-body">
         <div class="table-responsive">
-    <div class="card">
+    <div class="card "  style="border-top: 3px solid blue;">
       <div class="card-header d-flex justify-content-end">
         <button mat-icon-button (click)="viewPDF()">
           <mat-icon>remove_red_eye</mat-icon>
@@ -85,8 +86,8 @@
                     <td>{{ employee.employee_name }}</td>
                     <td>{{ employee.employee_designation }}</td>
                     <td>{{ employee.cabinNo }}</td>
-                    <td>{{ employee.login_date_time }}</td>
-                    <td>{{ employee.logout_date_time || 'N/A' }}</td>
+                    <td>{{ employee.login_date_time  | date}}</td>
+                    <td>{{ employee.logout_date_time || 'N/A' | date }}</td>
                   </tr>
                   <tr *ngIf="filteredAttendance.length === 0">
                     <td colspan="5" class="text-center">No records found.</td>

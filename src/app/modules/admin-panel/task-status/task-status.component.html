@@ -11,26 +11,45 @@
     <table class="table mt-3 table-bordered">
       <thead>
         <tr>
-          <th scope="col">Task Name</th>
+          <th scope="col">S.N</th>
+          <th scope="col">Employee Name</th>
+          <th scope="col">Project Name</th>
           <th scope="col">Start Date</th>
           <th scope="col">End Date</th>
-          <th scope="col">Status</th>
-          <th scope="col">Actions</th>
+          <th scope="col">Project Status</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let task of tasks">
+        <!-- <tr *ngFor="let task of tasks">
           <td>{{ task.name }}</td>
           <td>{{ task.startDate | date }}</td>
           <td>{{ task.endDate | date }}</td>
           <td>{{ getStatusText(task.status) }}</td>
-          <td>
+          <!-- <td>
             <div class="d-flex gap-2">
                 <button class="btn btn-warning btn-sm" (click)="editTask(task)">Edit</button>
                 <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
             </div>
-          </td>
-        </tr>
+          </td> 
+        </tr> -->
+        <ng-container *ngFor="let empDetails of tasks;let i=index">
+          <tr *ngFor="let task of empDetails.taskDetails">
+            <td>{{i+1}}</td>
+            <td>{{ empDetails.employee_name }}</td> <!-- Employee Name -->
+            <td>{{ task.project_name  }}</td> <!-- Project Name -->
+            <td>{{ task.start_date | date }}</td> <!-- Start Date -->
+            <td>{{ task.end_date  | date }}</td> <!-- End Date -->
+            <td>
+              <span [ngClass]="getBadgeClass(task.project_status)">{{ task.project_status }}</span>
+            </td>
+            <!-- <td>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-warning" (click)="editTask(task,empDetails)">Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteTask(task,empDetails)">Delete</button>
+              </div>
+            </td> -->
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>

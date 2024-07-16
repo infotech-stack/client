@@ -20,4 +20,8 @@ button.mat-menu-item {
     margin-right: 8px; /* Add space between icon and text */
     font-size: 20px; /* Adjust icon size */
   }
+  .active {
+    background-color: blue; /* Gray background color */
+    color: black;
+  }
   

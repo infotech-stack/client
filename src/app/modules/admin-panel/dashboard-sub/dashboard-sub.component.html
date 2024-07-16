@@ -9,7 +9,7 @@
   <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
     <!-- In Progress Tasks -->
     <div class="col">
-      <div class="card bg-white shadow-sm border-primary">
+      <div class="card bg-white shadow-sm " style="border-left: 3px solid blue;">
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <h2 class="card-title text-lg fw-bold text-primary">In Progress Tasks</h2>
@@ -24,7 +24,7 @@
 
     <!-- Completed Tasks -->
     <div class="col">
-      <div class="card bg-white shadow-sm border-success">
+      <div class="card bg-white shadow-sm " style="border-left: 3px solid green;">
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <h2 class="card-title text-lg fw-bold text-success">Completed Tasks</h2>
@@ -39,7 +39,7 @@
 
     <!-- Pending Tasks -->
     <div class="col">
-      <div class="card bg-white shadow-sm border-warning">
+      <div class="card bg-white shadow-sm " style="border-left: 3px solid yellow;">
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <h2 class="card-title text-lg fw-bold text-warning">Pending Tasks</h2>
@@ -54,12 +54,12 @@
 
     <!-- All Tasks -->
     <div class="col">
-      <div class="card bg-white shadow-sm border-secondary">
+      <div class="card bg-white shadow-sm " style="border-left: 3px solid purple;">
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <h2 class="card-title text-lg fw-bold text-purple">All Tasks</h2>
             <span class="text-purple">
-              <mat-icon class="text-purple">list_alt</mat-icon>
+              <mat-icon class="" style="color: purple;">list_alt</mat-icon>
             </span>
           </div>
           <p class="text-4xl fw-bold text-purple">{{taskCounts.all}}</p>
@@ -92,8 +92,8 @@
                   <td>{{i+1}}</td>
                   <td>{{ empDetails.employee_name }}</td> <!-- Employee Name -->
                   <td>{{ task.project_name }}</td> <!-- Project Name -->
-                  <td>{{ task.start_date }}</td> <!-- Start Date -->
-                  <td>{{ task.end_date }}</td> <!-- End Date -->
+                  <td>{{ task.start_date | date }}</td> <!-- Start Date -->
+                  <td>{{ task.end_date  | date}}</td> <!-- End Date -->
                   <td>{{ task.project_status }}</td> <!-- Project Status -->
                 </tr>
               </ng-container>

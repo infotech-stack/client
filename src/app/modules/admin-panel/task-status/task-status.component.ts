@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../../shared/services/api/api.service';
+import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
 
 interface Task {
   id: number;
@@ -18,19 +20,41 @@ export class TaskStatusComponent implements OnInit {
   //* --------------------------  Start  -----------------------------------*//
   
     //* -----------------------  Decorated Methods  --------------------------*//
-    tasks: Task[] = [
-      { id: 1, name: 'Task 1', startDate: new Date('2023-07-01'), endDate: new Date('2023-07-10'), status: 'done' },
-      { id: 2, name: 'Task 2', startDate: new Date('2023-07-05'), endDate: new Date('2023-07-15'), status: 'on progress' },
-      { id: 3, name: 'Task 3', startDate: new Date('2023-07-07'), endDate: new Date('2023-07-20'), status: 'not started' }
-    ];
-    //* -----------------------  Variable Declaration  -----------------------*//
+    // tasks: Task[] = [
+    //   { id: 1, name: 'Task 1', startDate: new Date('2023-07-01'), endDate: new Date('2023-07-10'), status: 'done' },
+    //   { id: 2, name: 'Task 2', startDate: new Date('2023-07-05'), endDate: new Date('2023-07-15'), status: 'on progress' },
+    //   { id: 3, name: 'Task 3', startDate: new Date('2023-07-07'), endDate: new Date('2023-07-20'), status: 'not started' }
+    // ];
+    tasks:any;
+    roles:any;
+    empId!:number;
+    // //* -----------------------  Variable Declaration  -----------------------*//
     //* ---------------------------  Constructor  ----------------------------*//
-    constructor() {}
-    //* -------------------------  Lifecycle Hooks  --------------------------*//
-    ngOnInit(): void {
+    constructor(private _apiService:ApiService,private _dataSharing:DataSharingService) {
 
     }
+    //* -------------------------  Lifecycle Hooks  --------------------------*//
+    ngOnInit(): void {
+      this._dataSharing.getEmployeeDatils.subscribe({
+        next:(data:any)=>{
+          this.empId=data.empId;
+          this.roles=data.employee_role;
+          this.getTaskDetails();
+        },
+        error:(err:any)=>{throw err},
+      })
+    }
     //* ----------------------------  APIs Methods  --------------------------*//
+    getTaskDetails(){
+      this._apiService.getTaskByRole(this.empId,this.roles).subscribe({
+        next:(res:any)=>{
+          this.tasks=res.data;
+          console.log(this.tasks);
+          
+        },
+        error:(err:any)=>{}
+      })
+    }
     getStatusText(status: string): string {
       switch (status) {
         case 'done':
@@ -46,11 +70,23 @@ export class TaskStatusComponent implements OnInit {
     editTask(task: Task): void {
       console.log('Edit task', task);
     }
-    deleteTask(taskId: number): void {
-      this.tasks = this.tasks.filter(task => task.id !== taskId);
-      console.log('Delete task', taskId);
-    }
+    // deleteTask(taskId: number): void {
+    //   this.tasks = this.tasks.filter(task => task.id !== taskId);
+    //   console.log('Delete task', taskId);
+    // }
     //* --------------------------  Public methods  --------------------------*//
+    getBadgeClass(status: string): string {
+      switch (status) {
+        case 'done':
+          return 'badge bg-success';
+        case 'on progress':
+          return 'badge bg-warning';
+        case 'pending':
+          return 'badge bg-danger';
+        default:
+          return '';
+      }
+    }
     
     //* ------------------------------ Helper Function -----------------------*//
   

@@ -128,18 +128,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (data) => {
         console.log(data, 'dashboard');
         this.username = data?.employee_name;
-        this.employeeId = data?.empId
-        data?.employee_role.map((item: any) => {
-          this.userRole += `${item + ','}`;
-        })
+        this.employeeId = data?.empId;
+        this.userRole = data?.employee_role.join(', ');
 
+        // Filter menu items based on employee access
         this.filterAccess = this.list.filter(item => data?.employee_access.includes(item.label));
+
+        // If user is not Admin, add 'Task Reports' to filterAccess
+        if (!data?.employee_role.includes('Admin')) {
+          this.filterAccess.push(this.list.find(item => item.label === 'Task Reports'));
+        }
+
         console.log(this.filterAccess, 'filter');
       },
       error: (err) => {
         throw err;
       }
-    })
+    });
   }
   ngOnDestroy(): void {
     // this._apiService.logoutMethod(this.employeeId).subscribe({

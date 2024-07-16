@@ -15,7 +15,7 @@
             <div class="col-12 col-md-6">
               <div class="mb-3">
                 <label for="projectName" class="form-label fw-bold">Project Name</label>
-                <input type="text" id="projectName" class="form-control" formControlName="projectName">
+                <input type="text" id="projectName" class="form-control" formControlName="projectName" placeholder="project name">
                 <div *ngIf="taskForm.controls['projectName'].invalid && (taskForm.controls['projectName'].dirty || taskForm.controls['projectName'].touched)" class="text-danger">
                   <div *ngIf="taskForm.controls['projectName'].errors?.['required']">Project Name is required.</div>
                 </div>
@@ -46,7 +46,7 @@
             <div class="col-12 col-md-6">
               <div class="mb-3">
                 <label for="projectStatus" class="form-label fw-bold">Project Status</label>
-                <select id="projectStatus" class="form-select" formControlName="projectStatus">
+                <select id="projectStatus" class="form-select" formControlName="projectStatus" >
                   <option value="">Select project status</option>
                   <option value="In Progress" *ngFor="let status of taskStatus" [value]="status">{{status}}</option>
                   
@@ -67,14 +67,15 @@
                   <option value="0">All</option>
                   <option *ngFor="let employee of employees" [value]="employee.empId">{{ employee.employee_name }}</option>
                 </select> -->
-                <mat-form-field appearance="fill" class="w-100">
-                  <mat-select id="assignTo" (selectionChange)="getEmployeeId($event)" formControlName="assignTo" multiple>
-                    <option value="0">All</option>
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-select id="assignTo" (selectionChange)="getEmployeeId($event)" formControlName="assignTo" multiple placeholder="Select employee">
+                    <mat-option [value]="'all'">All</mat-option>
                     <mat-option *ngFor="let role of employees" [value]="role.employee_name">
                       {{role.employee_name}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
+                
                 <div *ngIf="taskForm.controls['assignTo'].invalid && (taskForm.controls['assignTo'].dirty || taskForm.controls['assignTo'].touched)" class="text-danger">
                   <div *ngIf="taskForm.controls['assignTo'].errors?.['required']">Assign To is required.</div>
                 </div>
@@ -92,10 +93,6 @@
       </div>
     </div>
   </div>
-  
-  
-  
-  
   <div class="container mt-3">
     <div class="card" style="border-top: 3px solid blue;">
       <div class="card-body">
@@ -116,10 +113,12 @@
               <ng-container *ngFor="let empDetails of taskDetails">
                 <tr *ngFor="let task of empDetails.taskDetails">
                   <td>{{ empDetails.employee_name }}</td> <!-- Employee Name -->
-                  <td>{{ task.project_name }}</td> <!-- Project Name -->
-                  <td>{{ task.start_date }}</td> <!-- Start Date -->
-                  <td>{{ task.end_date }}</td> <!-- End Date -->
-                  <td>{{ task.project_status }}</td> <!-- Project Status -->
+                  <td>{{ task.project_name  }}</td> <!-- Project Name -->
+                  <td>{{ task.start_date | date }}</td> <!-- Start Date -->
+                  <td>{{ task.end_date  | date }}</td> <!-- End Date -->
+                  <td>
+                    <span [ngClass]="getBadgeClass(task.project_status)">{{ task.project_status }}</span>
+                  </td>
                   <td>
                     <div class="d-flex gap-2">
                       <button class="btn btn-sm btn-warning" (click)="editTask(task,empDetails)">Edit</button>
@@ -134,8 +133,6 @@
         </div>
       </div>
     </div>
-  </div>
-  
-    
+  </div>  
   </div>
   

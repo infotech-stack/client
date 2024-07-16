@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../shared/services/api/api.service';
+import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
 
 @Component({
   selector: 'app-employee',
@@ -69,6 +70,8 @@ export class EmployeeComponent implements OnInit{
       confirmPassword: 'backend789'
     }
   ];
+  empId!:number;
+  role:any;
   editBtnFlag:boolean=false;
   addBtnFlag:boolean=true;
   employeeId!:number;
@@ -76,39 +79,61 @@ export class EmployeeComponent implements OnInit{
   
   EmployeeRole: string[] = ['Admin', 'Team Leader', 'Senior Developer', 'Junior Developer', 'Customer Support', 'Digital Marketing'];
   //* ---------------------------  Constructor  ----------------------------*//
-  constructor(private fb: FormBuilder,private _apiService:ApiService) {
+  constructor(private fb: FormBuilder,private _apiService:ApiService,private _dataSharing:DataSharingService) {
     this.employeeForm = this.fb.group({
       name: ['', Validators.required],
-      designation: ['', Validators.required],
-      cabinNo: ['', Validators.required],
-      dateOfJoining: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      mobileno: ['', [Validators.required, Validators.pattern('^((\\+91-?)|0)?[0-9]{10}$')]],
+      dateofbirth: ['', Validators.required],
+      dateofjoin: ['', Validators.required],
+      religion: ['', Validators.required],
+      education: ['', Validators.required],
       address: ['', Validators.required],
-      contactNo: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      designation: ['', Validators.required],
+      cabinno: ['', Validators.required],
+      role: ['', Validators.required],
+      access: ['', Validators.required],
+      experience: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required],
-      role: [[], Validators.required],
-      access: [[], Validators.required]
-    }, { validator: this.passwordMatchValidator });
+      confirmPassword: ['', Validators.required]
+    }, { validator: this.checkPasswords });
   }
  
   //* -------------------------  Lifecycle Hooks  --------------------------*//
   ngOnInit(): void {
-    this.getEmployee();
+
+    this._dataSharing.getEmployeeDatils.subscribe({
+      next: (data) => {
+        this.empId=data.empId;
+        this.role=data.employee_role;
+        this.getEmployee();
+      },
+      error: (err) => {
+        throw err;
+      }
+    })
   }
   //* ----------------------------  APIs Methods  --------------------------*//
   insertEmployee(){
   let registerObj={
     employee_name:this.employeeForm.controls['name'].value,
     employee_designation:this.employeeForm.controls['designation'].value,
-    employee_cabinno:this.employeeForm.controls['cabinNo'].value,
-    employee_dateofjoin:this.employeeForm.controls['dateOfJoining'].value,
+    employee_cabinno:this.employeeForm.controls['cabinno'].value,
+    employee_dateofjoin:this.employeeForm.controls['dateofjoin'].value,
     employee_address:this.employeeForm.controls['address'].value,
-    employee_contactno:this.employeeForm.controls['contactNo'].value,
+    employee_contactno:this.employeeForm.controls['mobileno'].value,
     employee_password:this.employeeForm.controls['password'].value,
     employee_confirmpassword:this.employeeForm.controls['confirmPassword'].value,
     employee_role:this.employeeForm.controls['role'].value,
     employee_access:this.employeeForm.controls['access'].value,
+    employee_email:this.employeeForm.controls['email'].value,
+    employee_date_of_birth:this.employeeForm.controls['dateofbirth'].value,
+    employee_religion:this.employeeForm.controls['religion'].value,
+    employee_education:this.employeeForm.controls['education'].value,
+    employee_experience:this.employeeForm.controls['experience'].value,
+
   }
+    console.log(registerObj,'obj');
     
     this._apiService.insertEmployee(registerObj).subscribe({
       next:(res)=>{
@@ -122,7 +147,9 @@ export class EmployeeComponent implements OnInit{
   }
 
   getEmployee(){
- this._apiService.getEmployee().subscribe({
+    console.log(this.empId,this.role);
+    
+ this._apiService.getEmployee(this.empId,this.role).subscribe({
   next:(res)=>{
     console.log(res);
     
@@ -138,19 +165,28 @@ export class EmployeeComponent implements OnInit{
   }
   editUser(item: any) {
     this.employeeId=item.empId;
-    const formattedDate = new Date(item.employee_dateofjoin).toISOString().split('T')[0]; 
-    console.log(formattedDate);
+    const dateOfJoin = new Date(item.employee_dateofjoin).toISOString().split('T')[0]; 
+    const dateofBirth = new Date(item.employee_dateofjoin).toISOString().split('T')[0]; 
+  
     
-    this.employeeForm.controls['name'].patchValue(item.employee_name);
-    this.employeeForm.controls['designation'].patchValue(item.employee_designation);
-    this.employeeForm.controls['cabinNo'].patchValue(item.employee_cabinno);
-    this.employeeForm.controls['dateOfJoining'].patchValue(formattedDate);
-    this.employeeForm.controls['address'].patchValue(item.employee_address);
-    this.employeeForm.controls['contactNo'].patchValue(item.employee_contactno);
-    this.employeeForm.controls['password'].patchValue(item.employee_password);
-    this.employeeForm.controls['confirmPassword'].patchValue(item.employee_confirmpassword);
-    this.employeeForm.controls['role'].patchValue(item.employee_role);
-    this.employeeForm.controls['access'].patchValue(item.employee_access);
+    this.employeeForm.patchValue({
+      name: item.employee_name,
+      designation: item.employee_designation,
+      cabinno: item.employee_cabinno,
+      dateofjoin: dateOfJoin,
+      address: item.employee_address,
+      mobileno: item.employee_contactno,
+      password: item.employee_password,
+      confirmPassword: item.employee_confirmpassword,
+      role: item.employee_role,
+      access: item.employee_access,
+      email: item.employee_email,
+      dateofbirth: dateofBirth,
+      religion: item.employee_religion,
+      education: item.employee_education,
+      experience: item.employee_experience
+    });
+  
     this.editBtnFlag=true;
     this.addBtnFlag=false;
 
@@ -171,14 +207,19 @@ export class EmployeeComponent implements OnInit{
     let editedObj={
       employee_name:this.employeeForm.controls['name'].value,
       employee_designation:this.employeeForm.controls['designation'].value,
-      employee_cabinno:this.employeeForm.controls['cabinNo'].value,
-      employee_dateofjoin:this.employeeForm.controls['dateOfJoining'].value,
+      employee_cabinno:this.employeeForm.controls['cabinno'].value,
+      employee_dateofjoin:this.employeeForm.controls['dateofjoin'].value,
       employee_address:this.employeeForm.controls['address'].value,
-      employee_contactno:this.employeeForm.controls['contactNo'].value,
+      employee_contactno:this.employeeForm.controls['mobileno'].value,
       employee_password:this.employeeForm.controls['password'].value,
       employee_confirmpassword:this.employeeForm.controls['confirmPassword'].value,
       employee_role:this.employeeForm.controls['role'].value,
       employee_access:this.employeeForm.controls['access'].value,
+      employee_email:this.employeeForm.controls['email'].value,
+      employee_date_of_birth:this.employeeForm.controls['dateofbirth'].value,
+      employee_religion:this.employeeForm.controls['religion'].value,
+      employee_education:this.employeeForm.controls['education'].value,
+      employee_experience:this.employeeForm.controls['experience'].value,
     }
     this._apiService.updateEmployee(this.employeeId,editedObj).subscribe({
       next:(res)=>{
@@ -192,6 +233,11 @@ export class EmployeeComponent implements OnInit{
   }
   //* --------------------------  Public methods  --------------------------*//
   get formControls() { return this.employeeForm.controls; }
+  checkPasswords(group: FormGroup) { 
+    let pass = group.controls['password'].value;
+    let confirmPass = group.controls['confirmPassword'].value;
+    return pass === confirmPass ? null : { notSame: true };
+  }
   //* ------------------------------ Helper Function -----------------------*//
   passwordMatchValidator(form: FormGroup) {
     return form.get('password')?.value === form.get('confirmPassword')?.value

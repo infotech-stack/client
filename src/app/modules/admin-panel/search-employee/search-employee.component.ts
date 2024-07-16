@@ -1,10 +1,69 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ApiService } from '../../../shared/services/api/api.service';
+import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
 
 @Component({
   selector: 'app-search-employee',
   templateUrl: './search-employee.component.html',
   styleUrl: './search-employee.component.scss'
 })
-export class SearchEmployeeComponent {
+export class SearchEmployeeComponent implements OnInit {
 
+  //* --------------------------  Start  -----------------------------------*//
+  
+    //* -----------------------  Decorated Methods  --------------------------*//
+  
+    //* -----------------------  Variable Declaration  -----------------------*//
+    searchForm: FormGroup;
+    employees: any;
+    selectedEmployees: any;
+    empId!:number;
+    roles:any;
+    //* ---------------------------  Constructor  ----------------------------*//
+    constructor(private fb: FormBuilder,private _apiService:ApiService,private _dataSharing:DataSharingService) {
+      this.searchForm = this.fb.group({
+        employeeName: ['']
+      });
+    }
+    //* -------------------------  Lifecycle Hooks  --------------------------*//
+    ngOnInit(): void {
+      this._dataSharing.getEmployeeDatils.subscribe({
+        next:(data:any)=>{
+          this.empId=data.empId;
+          this.roles=data.employee_role;
+          this.getEmployees();
+        },
+        error:(err:any)=>{throw err},
+      })
+    }
+  
+    //* ----------------------------  APIs Methods  --------------------------*//
+    onSearch(): void {
+      const selectedEmpId = this.searchForm.value.employeeName;
+      console.log(selectedEmpId,'id');
+      this._apiService.searchEmployeeById(selectedEmpId).subscribe({
+        next:(res:any)=>{
+          console.log(res.data);
+          this.selectedEmployees=res.data;
+        },
+        error:(err:any)=>{throw err},
+      })
+      
+    }
+    getEmployees(){
+      this._apiService.getEmployee(this.empId,this.roles).subscribe({
+        next: (res) => {
+          console.log(res);
+          
+          this.employees = res.data;
+        },
+        error: (err) => {}
+      });
+    }
+    //* --------------------------  Public methods  --------------------------*//
+    
+    //* ------------------------------ Helper Function -----------------------*//
+  
+    //! -------------------------------  End  --------------------------------!//
 }

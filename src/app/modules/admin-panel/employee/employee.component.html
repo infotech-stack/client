@@ -11,112 +11,141 @@
       <div class="card">
         <div class="card-body">
           <form [formGroup]="employeeForm">
+            <!-- Personal Details -->
             <div class="row">
+              <div class="col-12">
+                <h3 class="mb-3 fw-bold">Personal Details :</h3>
+              </div>
+              <hr>
               <div class="col-12 col-md-4 mb-3">
                 <label for="name" class="form-label fw-bold">Name</label>
-                <input type="text" id="name" class="form-control" formControlName="name">
-                <div
-                  *ngIf="formControls['name'].invalid && (formControls['name'].dirty || formControls['name'].touched)"
-                  class="text-danger">
+                <input type="text" id="name" class="form-control" formControlName="name" placeholder="employee name">
+                <div *ngIf="formControls['name'].invalid && (formControls['name'].dirty || formControls['name'].touched)" class="text-danger">
                   <div *ngIf="formControls['name'].errors?.['required']">Name is required.</div>
                 </div>
               </div>
               <div class="col-12 col-md-4 mb-3">
-                <label for="designation" class="form-label fw-bold">Designation</label>
-                <input type="text" id="designation" class="form-control" formControlName="designation">
-                <div
-                  *ngIf="formControls['designation'].invalid && (formControls['designation'].dirty || formControls['designation'].touched)"
-                  class="text-danger">
-                  <div *ngIf="formControls['designation'].errors?.['required']">Designation is required.</div>
+                <label for="email" class="form-label fw-bold">Email</label>
+                <input type="email" id="email" class="form-control" formControlName="email" placeholder="email id">
+                <div *ngIf="formControls['email'].invalid && (formControls['email'].dirty || formControls['email'].touched)" class="text-danger">
+                  <div *ngIf="formControls['email'].errors?.['required']">Email is required.</div>
+                  <div *ngIf="formControls['email'].errors?.['email']">Invalid email format.</div>
                 </div>
               </div>
               <div class="col-12 col-md-4 mb-3">
-                <label for="cabinNo" class="form-label fw-bold">Cabin Number</label>
-                <input type="text" id="cabinNo" class="form-control" formControlName="cabinNo">
-                <div
-                  *ngIf="formControls['cabinNo'].invalid && (formControls['cabinNo'].dirty || formControls['cabinNo'].touched)"
-                  class="text-danger">
-                  <div *ngIf="formControls['cabinNo'].errors?.['required']">Cabin Number is required.</div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 col-md-4 mb-3">
-                <label for="dateOfJoining" class="form-label fw-bold">Date of Joining</label>
-                <input type="date" id="dateOfJoining" class="form-control" formControlName="dateOfJoining">
-                <div
-                  *ngIf="formControls['dateOfJoining'].invalid && (formControls['dateOfJoining'].dirty || formControls['dateOfJoining'].touched)"
-                  class="text-danger">
-                  <div *ngIf="formControls['dateOfJoining'].errors?.['required']">Date of Joining is required.</div>
+                <label for="mobileno" class="form-label fw-bold">Mobile Number</label>
+                <input type="text" id="mobileno" class="form-control" formControlName="mobileno" placeholder="mobile no">
+                <div *ngIf="formControls['mobileno'].invalid && (formControls['mobileno'].dirty || formControls['mobileno'].touched)" class="text-danger">
+                  <div *ngIf="formControls['mobileno'].errors?.['required']">Mobile Number is required.</div>
+                  <div *ngIf="formControls['mobileno'].errors?.['pattern']">Invalid mobile number format.</div>
                 </div>
               </div>
               <div class="col-12 col-md-4 mb-3">
-                <label for="contactNo" class="form-label fw-bold">Contact Number</label>
-                <input type="text" id="contactNo" class="form-control" formControlName="contactNo">
-                <div
-                  *ngIf="formControls['contactNo'].invalid && (formControls['contactNo'].dirty || formControls['contactNo'].touched)"
-                  class="text-danger">
-                  <div *ngIf="formControls['contactNo'].errors?.['required']">Contact Number is required.</div>
+                <label for="dateofbirth" class="form-label fw-bold">Date of Birth</label>
+                <input type="date" id="dateofbirth" class="form-control" formControlName="dateofbirth">
+                <div *ngIf="formControls['dateofbirth'].invalid && (formControls['dateofbirth'].dirty || formControls['dateofbirth'].touched)" class="text-danger">
+                  <div *ngIf="formControls['dateofbirth'].errors?.['required']">Date of Birth is required.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="religion" class="form-label fw-bold">Religion</label>
+                <input type="text" id="religion" class="form-control" formControlName="religion" placeholder="religion">
+                <div *ngIf="formControls['religion'].invalid && (formControls['religion'].dirty || formControls['religion'].touched)" class="text-danger">
+                  <div *ngIf="formControls['religion'].errors?.['required']">Religion is required.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="education" class="form-label fw-bold">Education</label>
+                <input type="text" id="education" class="form-control" formControlName="education" placeholder="education">
+                <div *ngIf="formControls['education'].invalid && (formControls['education'].dirty || formControls['education'].touched)" class="text-danger">
+                  <div *ngIf="formControls['education'].errors?.['required']">Education is required.</div>
                 </div>
               </div>
               <div class="col-12 col-md-4 mb-3">
                 <label for="address" class="form-label fw-bold">Address</label>
-                <textarea id="address" class="form-control" formControlName="address"></textarea>
-                <div
-                  *ngIf="formControls['address'].invalid && (formControls['address'].dirty || formControls['address'].touched)"
-                  class="text-danger">
+                <textarea id="address" class="form-control" formControlName="address" placeholder="address..."></textarea>
+                <div *ngIf="formControls['address'].invalid && (formControls['address'].dirty || formControls['address'].touched)" class="text-danger">
                   <div *ngIf="formControls['address'].errors?.['required']">Address is required.</div>
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-12 col-md-6 mb-3">
-                <label for="password" class="form-label fw-bold">Password</label>
-                <input type="password" class="form-control" id="password" formControlName="password">
-                <div
-                  *ngIf="formControls['password'].invalid && (formControls['password'].dirty || formControls['password'].touched)"
-                  class="text-danger">
-                  <div *ngIf="formControls['password'].errors?.['required']">Password is required.</div>
+  
+            <!-- Work Details -->
+            <div class="row mt-4">
+              <div class="col-12">
+                <h3 class="mb-3 fw-bold" >Work Details :</h3>
+              </div>
+              <hr>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="dateofjoin" class="form-label fw-bold">Date of Joining</label>
+                <input type="date" id="dateofjoin" class="form-control" formControlName="dateofjoin">
+                <div *ngIf="formControls['dateofjoin'].invalid && (formControls['dateofjoin'].dirty || formControls['dateofjoin'].touched)" class="text-danger">
+                  <div *ngIf="formControls['dateofjoin'].errors?.['required']">Date of Joining is required.</div>
                 </div>
               </div>
-              <div class="col-12 col-md-6 mb-3">
-                <label for="confirmPassword" class="form-label fw-bold">Confirm Password</label>
-                <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword">
-                <div
-                  *ngIf="formControls['confirmPassword'].invalid && (formControls['confirmPassword'].dirty || formControls['confirmPassword'].touched)"
-                  class="text-danger">
-                  <div *ngIf="formControls['confirmPassword'].errors?.['required']">Confirm Password is required.</div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="designation" class="form-label fw-bold">Designation</label>
+                <input type="text" id="designation" class="form-control" formControlName="designation" placeholder=" Designation">
+                <div *ngIf="formControls['designation'].invalid && (formControls['designation'].dirty || formControls['designation'].touched)" class="text-danger">
+                  <div *ngIf="formControls['designation'].errors?.['required']">Designation is required.</div>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-12 col-md-6 mb-3">
-                <label for="access" class="form-label fw-bold">Select The Access</label>
-                <mat-form-field appearance="fill" class="w-100">
-                  <mat-select id="access" formControlName="access" multiple>
-                    <mat-option *ngFor="let access of EmployeeAccess" [value]="access">
-                      {{access}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="cabinno" class="form-label fw-bold">Cabin Number</label>
+                <input type="text" id="cabinno" class="form-control" formControlName="cabinno" placeholder="cabin no">
+                <div *ngIf="formControls['cabinno'].invalid && (formControls['cabinno'].dirty || formControls['cabinno'].touched)" class="text-danger">
+                  <div *ngIf="formControls['cabinno'].errors?.['required']">Cabin Number is required.</div>
+                </div>
               </div>
-              <div class="col-12 col-md-6 mb-3">
+              <div class="col-12 col-md-4 mb-3">
+                <label for="experience" class="form-label fw-bold">Experience</label>
+                <input type="text" id="experience" class="form-control" formControlName="experience" placeholder="experience">
+                <div *ngIf="formControls['experience'].invalid && (formControls['experience'].dirty || formControls['experience'].touched)" class="text-danger">
+                  <div *ngIf="formControls['experience'].errors?.['required']">Experience is required.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
                 <label for="role" class="form-label fw-bold">Select The Role</label>
-                <mat-form-field appearance="fill" class="w-100">
-                  <mat-select id="role" formControlName="role" multiple>
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-select id="role" formControlName="role" multiple placeholder="role">
                     <mat-option *ngFor="let role of EmployeeRole" [value]="role">
                       {{role}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="access" class="form-label fw-bold">Select The Access</label>
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-select id="access" formControlName="access" multiple placeholder="access">
+                    <mat-option *ngFor="let access of EmployeeAccess" [value]="access">
+                      {{access}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="password" class="form-label fw-bold">Password</label>
+                <input type="password" class="form-control" id="password" formControlName="password" placeholder="password">
+                <div *ngIf="formControls['password'].invalid && (formControls['password'].dirty || formControls['password'].touched)" class="text-danger">
+                  <div *ngIf="formControls['password'].errors?.['required']">Password is required.</div>
+                  <div *ngIf="formControls['password'].errors?.['minlength']">Password must be at least 6 characters.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 mb-3">
+                <label for="confirmPassword" class="form-label fw-bold">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" placeholder="confirm-password">
+                <div *ngIf="formControls['confirmPassword'].invalid && (formControls['confirmPassword'].dirty || formControls['confirmPassword'].touched)" class="text-danger">
+                  <div *ngIf="formControls['confirmPassword'].errors?.['required']">Confirm Password is required.</div>
+                  <div *ngIf="formControls['confirmPassword'].errors?.['notSame']">Passwords do not match.</div>
+                </div>
+              </div>
             </div>
+            
             <div class="row">
               <div class="col-12 text-center">
-                <button type="submit" *ngIf="addBtnFlag" class="btn btn-primary" (click)="insertEmployee()">Add New
-                  Employee</button>
-                <button type="submit" *ngIf="editBtnFlag" class="btn btn-warning" (click)="updateEmployee()">Edit
-                  Employee</button>
+                <button type="submit" *ngIf="addBtnFlag" class="btn btn-primary" (click)="insertEmployee()">Add New Employee</button>
+                <button type="submit" *ngIf="editBtnFlag" class="btn btn-warning" (click)="updateEmployee()">Edit Employee</button>
               </div>
             </div>
           </form>
@@ -124,6 +153,8 @@
       </div>
     </div>
   </div>
+  
+  
 
 
 </div>

@@ -31,8 +31,8 @@ export class ApiService {
     return this.http.put<any>(`${environment.logout}?empId=${empId}`, '');
   }
   //EMPLOYEE
-  getEmployee() {
-    return this.http.get<any>(`${environment.getEmployee}`);
+  getEmployee(empId:number,roles:string[]) {
+    return this.http.post<any>(`${environment.getEmployee}?empId=${empId}`,{roles});
   }
   insertEmployee(registerDetails: any): Observable<any> {
     console.log(registerDetails, 'ser');
@@ -68,5 +68,17 @@ export class ApiService {
   }
   deleteTask(task_id:number,empId:number){
     return this.http.put<any>(`${environment.deleteTask}?task_id=${task_id}&empId=${empId}`,'');
+  }
+  //EMPLOYEE SEARCH
+  searchEmployeeById(empId:number){
+    return this.http.get<any>(`${environment.employeeSearchById}?empId=${empId}`);
+  }
+  //TASK REPORTS
+  taskReports(empId:number,taskId:number,status:any){
+    return this.http.post(`${environment.taskReports}?empId=${empId}&taskId=${taskId}`,status);
+
+  }
+  getFile(fileName: string): Observable<any> {
+    return this.http.get(`http://localhost:3000/api/employee-register/getFile?file=1720849392871-istockphoto-1476170969-170667a.webp`, { responseType: 'blob' });
   }
 }

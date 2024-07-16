@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ApiService } from '../../../shared/services/api/api.service';
+import { response } from 'express';
 
 @Component({
   selector: 'app-message',
@@ -7,9 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrl: './message.component.scss'
 })
 export class MessageComponent implements OnInit {
-  ngOnInit(): void {
-
-  }
+ 
   //* --------------------------  Start  -----------------------------------*//
   
     //* -----------------------  Decorated Methods  --------------------------*//
@@ -21,8 +21,9 @@ export class MessageComponent implements OnInit {
       { id: 2, name: 'User 2' },
       { id: 3, name: 'User 3' }
     ];
+    imageUrl!: string;
     //* ---------------------------  Constructor  ----------------------------*//
-    constructor(private fb: FormBuilder) {
+    constructor(private fb: FormBuilder ,private _apiService:ApiService) {
       this.communicationForm = this.fb.group({
         recipients: [[], Validators.required], // Use an array if multiple recipients are allowed
         message: ['', Validators.required],
@@ -30,7 +31,9 @@ export class MessageComponent implements OnInit {
       });
     }
     //* -------------------------  Lifecycle Hooks  --------------------------*//
-   
+    ngOnInit(): void {
+      this.getFile();
+    }
   
     //* ----------------------------  APIs Methods  --------------------------*//
     sendMessage() {
@@ -41,6 +44,21 @@ export class MessageComponent implements OnInit {
       } else {
         this.communicationForm.markAllAsTouched();
       }
+    }
+    getFile(){
+      const fileName='';
+      this._apiService.getFile(fileName).subscribe( (response: Blob) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.imageUrl = reader.result as string;
+        };
+        reader.readAsDataURL(response);
+      },
+      error => {
+        console.error('Error loading image:', error);
+        // Handle error, e.g., show an error message
+      }
+    );
     }
     //* --------------------------  Public methods  --------------------------*//
     get formControls() { return this.communicationForm.controls; }

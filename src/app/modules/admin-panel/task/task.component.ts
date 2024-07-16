@@ -71,7 +71,7 @@ export class TaskComponent implements OnInit {
   //   }
   // }
   getEmoployee() {
-    this._apiService.getEmployee().subscribe({
+    this._apiService.getEmployee(this.empId,this.roles).subscribe({
 
 
       next: (res) => {
@@ -218,6 +218,19 @@ export class TaskComponent implements OnInit {
   // }
   //* --------------------------  Public methods  --------------------------*//
   get formControls() { return this.taskForm.controls; }
+  getBadgeClass(status: string): string {
+    switch (status) {
+      case 'done':
+        return 'badge bg-success';
+      case 'on progress':
+        return 'badge bg-warning';
+      case 'pending':
+        return 'badge bg-danger';
+      default:
+        return '';
+    }
+  }
+  
   //* ------------------------------ Helper Function -----------------------*//
 
   //! -------------------------------  End  --------------------------------!//

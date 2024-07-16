@@ -17,5 +17,9 @@ export const environment = {
     gettaskByRole:`http://localhost:3000/api/employee-register/get-Tasks-ByRole`,
     assignTask:`http://localhost:3000/api/employee-register/task-assign-to-employee`,
     updatetask:`http://localhost:3000/api/employee-register/update-task`,
-    deleteTask:`http://localhost:3000/api/employee-register/delete-task`
+    deleteTask:`http://localhost:3000/api/employee-register/delete-task`,
+    //EMPLOYEE SEARCH
+    employeeSearchById:`http://localhost:3000/api/employee-register/search-employee-by-id`,
+    //TASK REPORTS
+    taskReports:`http://localhost:3000/api/employee-register/task-reports`
 };
