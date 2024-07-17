@@ -1,6 +1,6 @@
 import { HttpBackend, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, interval, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 
 // import { JwtAuthService } from './jwtauthservice.service';
@@ -13,8 +13,9 @@ export class ApiService {
   customer_id: any;
   country_no: any;
 
-  private httpClient: HttpClient;
 
+  private httpClient: HttpClient;
+  empId!:number;
   constructor(
     private http: HttpClient,
     private handler: HttpBackend,
@@ -78,7 +79,30 @@ export class ApiService {
     return this.http.post(`${environment.taskReports}?empId=${empId}&taskId=${taskId}`,status);
 
   }
+  //MESSAGE
   getFile(fileName: string): Observable<any> {
-    return this.http.get(`http://localhost:3000/api/employee-register/getFile?file=1720849392871-istockphoto-1476170969-170667a.webp`, { responseType: 'blob' });
+    console.log(fileName,'filname');
+    
+    return this.http.get(`http://localhost:3000/api/employee-register/getFile?file=${fileName}`, { responseType: 'blob', observe: 'response' });
+  }
+  uploadFile(formData: FormData){
+   return this.http.post<any>(`${environment.uploadFile}`,formData);
+  }
+  sendMessage(employeeId: number, message: string, files: File[]): Observable<any> {
+    const formData = new FormData();
+    formData.append('employeeId', employeeId.toString());
+    formData.append('message', message);
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+
+    return this.http.post<any>(`${environment.uploadFile}`, formData);
+  }
+  postMessage(messageDetails:any){
+    return this.http.post<any>(`${environment.postMessage}`,messageDetails);
+  }
+  getMessage(empId:number): Observable<any>{
+    this.empId=empId;
+   return this.http.get<any>(`${environment.getMessage}?empId=${empId}`)
   }
 }

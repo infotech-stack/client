@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../shared/services/api/api.service';
 import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
 import { MatSelectChange } from '@angular/material/select';
-
+import * as CryptoJS from 'crypto-js';
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
@@ -48,14 +48,19 @@ export class TaskComponent implements OnInit {
 
   //* -------------------------  Lifecycle Hooks  --------------------------*//  
   ngOnInit(): void {
-    this._dataSharing.getEmployeeDatils.subscribe({
-      next: (data) => {
-        this.empId=data.empId;
-        this.roles = data.employee_role;
-        this.getTaskByRole();
-      },
-      error: (err) => {}
-    });
+    // this._dataSharing.getEmployeeDatils.subscribe({
+    //   next: (data) => {
+    //     this.empId=data.empId;
+    //     this.roles = data.employee_role;
+    //     this.getTaskByRole();
+    //   },
+    //   error: (err) => {}
+    // });
+    const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
+    const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
+      this.empId=decryptedEmployee.empId;
+      this.roles=decryptedEmployee.employee_role;
+      this.getTaskByRole();
     this.getEmoployee();
   }
   //* ----------------------------  APIs Methods  --------------------------*//
@@ -105,7 +110,7 @@ export class TaskComponent implements OnInit {
   //     console.error('Error assigning task', error);
   //   });
   // }
-  getEmployeeId(event: MatSelectChange): void {
+  getEmployeeId(event: any): void {
     const selectedValues = event.value; 
     console.log('Selected Values:', selectedValues);
     let selectedEmployeeIds: string[] = [];
@@ -232,6 +237,10 @@ export class TaskComponent implements OnInit {
   }
   
   //* ------------------------------ Helper Function -----------------------*//
-
+  decryptData = (encryptedData: any) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
+    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    return decryptedData;
+};
   //! -------------------------------  End  --------------------------------!//
 }

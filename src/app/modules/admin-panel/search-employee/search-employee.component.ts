@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ApiService } from '../../../shared/services/api/api.service';
 import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
-
+import * as CryptoJS from 'crypto-js';
 @Component({
   selector: 'app-search-employee',
   templateUrl: './search-employee.component.html',
@@ -28,14 +28,19 @@ export class SearchEmployeeComponent implements OnInit {
     }
     //* -------------------------  Lifecycle Hooks  --------------------------*//
     ngOnInit(): void {
-      this._dataSharing.getEmployeeDatils.subscribe({
-        next:(data:any)=>{
-          this.empId=data.empId;
-          this.roles=data.employee_role;
-          this.getEmployees();
-        },
-        error:(err:any)=>{throw err},
-      })
+      // this._dataSharing.getEmployeeDatils.subscribe({
+      //   next:(data:any)=>{
+      //     this.empId=data.empId;
+      //     this.roles=data.employee_role;
+      //     this.getEmployees();
+      //   },
+      //   error:(err:any)=>{throw err},
+      // })
+      const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
+      const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
+        this.empId=decryptedEmployee.empId;
+        this.roles=decryptedEmployee.employee_role;
+        this.getEmployees();
     }
   
     //* ----------------------------  APIs Methods  --------------------------*//
@@ -64,6 +69,10 @@ export class SearchEmployeeComponent implements OnInit {
     //* --------------------------  Public methods  --------------------------*//
     
     //* ------------------------------ Helper Function -----------------------*//
-  
+    decryptData = (encryptedData: any) => {
+      const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
+      const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      return decryptedData;
+  };
     //! -------------------------------  End  --------------------------------!//
 }

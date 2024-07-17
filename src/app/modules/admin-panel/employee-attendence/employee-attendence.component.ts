@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../shared/services/api/api.service';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
-
+import * as CryptoJS from 'crypto-js';
 import html2canvas from 'html2canvas';
 import jspdf from 'jspdf';
 // import * as html2pdf from "html2pdf.js";
@@ -245,6 +245,10 @@ export class EmployeeAttendenceComponent implements OnInit {
       pdf.save('new-file.pdf'); // Generated PDF
     });
   }
-  
+  decryptData = (encryptedData: any) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
+    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    return decryptedData;
+};
     //! -------------------------------  End  --------------------------------!//
 }

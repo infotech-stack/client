@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../shared/services/api/api.service';
 import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
-
+import * as CryptoJS from 'crypto-js';
 interface Task {
   id: number;
   name: string;
@@ -29,14 +29,19 @@ export class TaskReportsComponent {
     }
     //* -------------------------  Lifecycle Hooks  --------------------------*//
     ngOnInit(): void {
-      this._dataSharing.getEmployeeDatils.subscribe({
-        next:(data:any)=>{
-          this.empId=data.empId;
-          this.roles=data.employee_role;
-          this.getTaskDetails();
-        },
-        error:(err:any)=>{throw err},
-      })
+      // this._dataSharing.getEmployeeDatils.subscribe({
+      //   next:(data:any)=>{
+      //     this.empId=data.empId;
+      //     this.roles=data.employee_role;
+      //     this.getTaskDetails();
+      //   },
+      //   error:(err:any)=>{throw err},
+      // })
+      const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
+      const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
+        this.empId=decryptedEmployee.empId;
+        this.roles=decryptedEmployee.employee_role;
+        this.getTaskDetails();
     }
     //* ----------------------------  APIs Methods  --------------------------*//
     getTaskDetails(){
@@ -99,6 +104,10 @@ export class TaskReportsComponent {
     }
     
     //* ------------------------------ Helper Function -----------------------*//
-  
+    decryptData = (encryptedData: any) => {
+      const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
+      const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      return decryptedData;
+  };
     //! -------------------------------  End  --------------------------------!//
 }

@@ -21,5 +21,9 @@ export const environment = {
     //EMPLOYEE SEARCH
     employeeSearchById:`http://localhost:3000/api/employee-register/search-employee-by-id`,
     //TASK REPORTS
-    taskReports:`http://localhost:3000/api/employee-register/task-reports`
+    taskReports:`http://localhost:3000/api/employee-register/task-reports`,
+    //MESSAGE
+    uploadFile:`http://localhost:3000/api/employee-register/upload`,
+    postMessage:`http://localhost:3000/api/employee-register/post-message`,
+    getMessage:`http://localhost:3000/api/employee-register/get-message`,
 };

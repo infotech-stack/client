@@ -8,15 +8,15 @@
   </div>
     <div class="row mt-2">
       <div class="col-md-8 offset-md-2">
-        <form [formGroup]="communicationForm" >
+        <form [formGroup]="messageForm" >
           <div class="mb-3">
             <label for="recipients" class="form-label fw-bold">Whom to send</label>
-            <select id="recipients" class="form-select" formControlName="recipients">
+            <select id="recipients" class="form-select" formControlName="employeeId">
                 <option value="">Select employee</option>
-                <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+                <option *ngFor="let user of employees" [value]="user.empId">{{ user.employee_name }}</option>
               </select>
-              <div *ngIf="formControls['recipients'].invalid && (formControls['recipients'].dirty || formControls['recipients'].touched)" class="text-danger">
-                <div *ngIf="formControls['recipients'].errors?.['required']">EmployeeName is required.</div>
+              <div *ngIf="formControls['employeeId'].invalid && (formControls['employeeId'].dirty || formControls['employeeId'].touched)" class="text-danger">
+                <div *ngIf="formControls['employeeId'].errors?.['required']">EmployeeName is required.</div>
               </div>
           </div>
   
@@ -29,16 +29,58 @@
           </div>
   
           <div class="mb-3">
-            <label for="attachment" class="form-label fw-bold">Attachment</label>
-            <input id="attachment" type="file" class="form-control" formControlName="attachment">
+            <label for="files" class="form-label fw-bold">Attachment</label>
+            <input id="files" type="file" class="form-control" multiple  (change)="onSelectFiles($event)">
           </div>
   
-          <button type="submit" class="btn btn-primary" (click)="sendMessage()">Send</button>
+          <button type="submit" class="btn btn-primary" (click)="onSubmit()" >Send</button>
         </form>
       </div>
     </div>
   </div>
-  <div>
-    <img [src]="imageUrl" alt="" style="width: 100px;height: 100px;">
+<!-- <div> 
+  <--  <img [src]="imageUrl" alt="" style="width: 100px;height: 100px;">
     
   </div>
+  <button class="btn btn-primary" (click)="downloadPDF('')">pdf download</button> -->
+<!-- <form [formGroup]="messageForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Employee Name:</label>
+    <select class="form-select" formControlName="employeeId">
+      <option value="">Select employee</option>
+      <option *ngFor="let user of employees" [value]="user.empId">{{ user.employee_name }}</option>
+    </select>
+  </div>
+  <div>
+    <label>Message Description:</label>
+    <textarea formControlName="message"></textarea>
+  </div>
+  <div>
+    <label>Attach Files:</label>
+    <input type="file" multiple (change)="onSelectFiles($event)">
+  </div>
+  <button type="submit">Send Message</button>
+</form> -->
+
+<div class="container mt-4"  >
+
+  <div *ngFor="let message of messageList" class="alert alert-info alert-dismissible fade show d-flex justify-content-between" role="alert">
+   <div>
+    <strong>Message Details</strong><br>
+    Send By: {{ message.sender_name }}<br>
+    Receiver: {{ message.receiver_name }}<br>
+    <div class="d-flex gap-2">
+      Message: {{ message.message_description }}
+      <button mat-icon-button (click)="downloadPDF(message.filename)" *ngIf="message.filename.length > 0">
+        <mat-icon>download</mat-icon>
+      </button>
+    </div>
+   </div>
+
+
+
+    <button type="button" mat-icon-button aria-label="Close" (click)="closeAlert()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>

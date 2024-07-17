@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../shared/services/api/api.service';
 import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
-
+import * as CryptoJS from 'crypto-js';
 @Component({
   selector: 'app-employee',
   templateUrl: './employee.component.html',
@@ -102,16 +102,21 @@ export class EmployeeComponent implements OnInit{
   //* -------------------------  Lifecycle Hooks  --------------------------*//
   ngOnInit(): void {
 
-    this._dataSharing.getEmployeeDatils.subscribe({
-      next: (data) => {
-        this.empId=data.empId;
-        this.role=data.employee_role;
-        this.getEmployee();
-      },
-      error: (err) => {
-        throw err;
-      }
-    })
+    // this._dataSharing.getEmployeeDatils.subscribe({
+    //   next: (data) => {
+    //     this.empId=data.empId;
+    //     this.role=data.employee_role;
+    //     this.getEmployee();
+    //   },
+    //   error: (err) => {
+    //     throw err;
+    //   }
+    // })
+    const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
+    const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
+      this.empId=decryptedEmployee.empId;
+      this.role=decryptedEmployee.employee_role;
+      this.getEmployee();
   }
   //* ----------------------------  APIs Methods  --------------------------*//
   insertEmployee(){
@@ -243,6 +248,11 @@ export class EmployeeComponent implements OnInit{
     return form.get('password')?.value === form.get('confirmPassword')?.value
       ? null : { 'mismatch': true };
   }
+  decryptData = (encryptedData: any) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
+    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    return decryptedData;
+};
   //! -------------------------------  End  --------------------------------!//
 
 }

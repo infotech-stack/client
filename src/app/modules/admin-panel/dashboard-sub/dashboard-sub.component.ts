@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angula
 import { ApiService } from '../../../shared/services/api/api.service';
 import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
 import { Chart } from 'chart.js/auto'; // Import Chart.js
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-dashboard-sub',
@@ -23,17 +24,23 @@ export class DashboardSubComponent implements OnInit, AfterViewInit {
   constructor(private _apiService: ApiService, private _dataSharing: DataSharingService) {}
 
   ngOnInit(): void {
-    this._dataSharing.getEmployeeDatils.subscribe({
-      next: (res: any) => {
-        console.log(res);
-        this.empId = res.empId;
-        this.roles = res.employee_role;
-        this.getTaskDetails();
-      },
-      error: (err) => {
-        throw err;
-      }
-    });
+    // this._dataSharing.getEmployeeDatils.subscribe({
+    //   next: (res: any) => {
+    //     console.log(res);
+    //     this.empId = res.empId;
+    //     this.roles = res.employee_role;
+    //     this.getTaskDetails();
+    //   },
+    //   error: (err) => {
+    //     throw err;
+    //   }
+    // });
+    const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
+    const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
+      this.empId=decryptedEmployee.empId;
+      this.roles=decryptedEmployee.employee_role;
+      this.getTaskDetails();
+
   }
 
   ngAfterViewInit(): void {
@@ -89,4 +96,9 @@ export class DashboardSubComponent implements OnInit, AfterViewInit {
       }
     });
   }
+  decryptData = (encryptedData: any) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
+    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    return decryptedData;
+  };
 }

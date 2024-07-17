@@ -3,7 +3,8 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { MatSidenav } from '@angular/material/sidenav';
 import { ApiService } from '../../../shared/services/api/api.service';
 import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
-
+import { log } from 'console';
+import * as CryptoJS from 'crypto-js';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -124,27 +125,46 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   //* -------------------------  Lifecycle Hooks  --------------------------*//
   ngOnInit(): void {
-    this._dataSharing.getEmployeeDatils.subscribe({
-      next: (data) => {
-        console.log(data, 'dashboard');
-        this.username = data?.employee_name;
-        this.employeeId = data?.empId;
-        this.userRole = data?.employee_role.join(', ');
-
-        // Filter menu items based on employee access
-        this.filterAccess = this.list.filter(item => data?.employee_access.includes(item.label));
-
-        // If user is not Admin, add 'Task Reports' to filterAccess
-        if (!data?.employee_role.includes('Admin')) {
-          this.filterAccess.push(this.list.find(item => item.label === 'Task Reports'));
-        }
-
-        console.log(this.filterAccess, 'filter');
-      },
-      error: (err) => {
-        throw err;
+    const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
+    console.log(encryptedEmployeeFromStorage,'encript');
+    
+   
+      const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
+      console.log(decryptedEmployee);
+      
+     
+      this.username = decryptedEmployee?.employee_name;
+      this.employeeId = decryptedEmployee?.empId;
+      this.userRole = decryptedEmployee?.employee_role.join(', ');
+      this.filterAccess = this.list.filter(item => decryptedEmployee?.employee_access.includes(item.label));
+      if (!decryptedEmployee?.employee_role.includes('Admin')) {
+        this.filterAccess.push(this.list.find(item => item.label === 'Task Reports'));
       }
-    });
+
+      console.log(decryptedEmployee.employee_name);  
+      console.log(decryptedEmployee.employee_role);  
+  
+    // this._dataSharing.getEmployeeDatils.subscribe({
+    //   next: (data) => {
+    //     console.log(data, 'dashboard');
+    //     this.username = data?.employee_name;
+    //     this.employeeId = data?.empId;
+    //     this.userRole = data?.employee_role.join(', ');
+
+    //     // Filter menu items based on employee access
+    //     this.filterAccess = this.list.filter(item => data?.employee_access.includes(item.label));
+
+    //     // If user is not Admin, add 'Task Reports' to filterAccess
+    //     if (!data?.employee_role.includes('Admin')) {
+    //       this.filterAccess.push(this.list.find(item => item.label === 'Task Reports'));
+    //     }
+
+    //     console.log(this.filterAccess, 'filter');
+    //   },
+    //   error: (err) => {
+    //     throw err;
+    //   }
+    // });
   }
   ngOnDestroy(): void {
     // this._apiService.logoutMethod(this.employeeId).subscribe({
@@ -177,6 +197,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.sidenav.toggle();
   }
   //* ------------------------------ Helper Function -----------------------*//
-
+ decryptData = (encryptedData: any) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
+    const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    return decryptedData;
+};
   //! -------------------------------  End  --------------------------------!//
 }
