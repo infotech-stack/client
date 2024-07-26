@@ -22,6 +22,14 @@ export class TaskReportsComponent {
     tasks:any;
     roles:any;
     empId!:number;
+    totalPages: number = 1;
+    currentPage: number = 1;
+    pageSize: any = 5;
+    sortField: string = 'employee_name';
+    sortOrder: string = 'ASC';
+    search: string = '';
+    // taskDetails: any[] = [];
+    pageSizeOptions: (number | string)[] = [5, 10, 20, 'all'];
     // //* -----------------------  Variable Declaration  -----------------------*//
     //* ---------------------------  Constructor  ----------------------------*//
     constructor(private _apiService:ApiService,private _dataSharing:DataSharingService) {
@@ -45,11 +53,12 @@ export class TaskReportsComponent {
     }
     //* ----------------------------  APIs Methods  --------------------------*//
     getTaskDetails(){
-      this._apiService.getTaskByRole(this.empId,this.roles).subscribe({
+      const limit = this.pageSize === 'all' ? -1 : Number(this.pageSize);
+      this._apiService.getTaskByRole(this.empId,this.roles,this.currentPage, this.pageSize).subscribe({
         next:(res:any)=>{
           this.tasks=res.data;
           console.log(this.tasks);
-          
+          this.totalPages = limit === -1 ? 1 : Math.ceil(res.total / Number(this.pageSize));
         },
         error:(err:any)=>{}
       })
@@ -58,12 +67,14 @@ export class TaskReportsComponent {
       // let reportObj={
       //   project_status:
       // }
-      console.log(task.selectedStatus);
-      
-      this._apiService.taskReports(this.empId,task.task_id,task.selectedStatus).subscribe({
+      console.log(task);
+      let object={
+        project_status:task.project_status
+      }
+      this._apiService.taskReports(this.empId,task.task_id,object).subscribe({
         next:(res:any)=>{
           console.log(res);
-          
+          this.getTaskDetails();
         },
         error:(err:any)=>{
           throw err;
@@ -102,12 +113,39 @@ export class TaskReportsComponent {
           return '';
       }
     }
-    
     //* ------------------------------ Helper Function -----------------------*//
     decryptData = (encryptedData: any) => {
       const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
       const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
       return decryptedData;
   };
+  onPageSizeChange(event: any) {
+    this.pageSize = event.target.value;
+    this.currentPage = 1; // Reset to the first page on page size change
+    this.getTaskDetails();
+  }
+  
+  onPageChange(page: number) {
+    if (page > 0 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.getTaskDetails();
+    }
+  }
+  
+  onSearchChange(event: any) {
+    this.search = event.target.value;
+    this.currentPage = 1; // Reset to the first page on search change
+    this.getTaskDetails();
+  }
+  
+  onSort(field: string) {
+    this.sortField = field;
+    this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC'; // Toggle sort order
+    this.getTaskDetails();
+  }
+  onSearch(): void {
+    this.currentPage = 1; // Reset to first page on new search
+    this.getTaskDetails();
+  }
     //! -------------------------------  End  --------------------------------!//
 }

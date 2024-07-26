@@ -6,7 +6,7 @@
       </div>
     </div>
   </div>
-  <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+  <div class="row row-cols-1 row-cols-md-3 g-4 mt-2 ">
     <!-- In Progress Tasks -->
     <div class="col">
       <div class="card bg-white shadow-sm " style="border-left: 3px solid blue;">
@@ -72,8 +72,20 @@
   <div class="row mt-4">
     <!-- Table Column -->
     <div class="col-12">
-      <div class="card bg-white shadow-sm border-dark">
+      <div class="card bg-white shadow-sm ">
         <div class="card-body">
+           <!-- Page Size Dropdown -->
+        <div class="d-flex justify-content-between mb-3">
+          <div>
+            <label for="pageSizeSelect">Page Size:</label>
+            <select id="pageSizeSelect" class="form-select d-inline-block w-auto ml-2" (change)="onPageSizeChange($event)">
+              <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+            </select>
+          </div>
+          <div>
+            <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)">
+          </div>
+        </div>
           <h2 class="card-title text-lg fw-bold text-dark">Task Details</h2>
           <table class="table">
             <thead>
@@ -81,9 +93,9 @@
                 <th>S.N</th>
                 <th>Employee Name</th>
                 <th>Task Name</th>
-                <th>Status</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -100,6 +112,14 @@
             </tbody>
           </table>
         </div>
+         <!-- Pagination Controls -->
+         <div class="d-flex justify-content-center gap-2">
+          <button class="btn btn-primary" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+         <div class="d-flex justify-content-center align-content-center">
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
+         </div>
+          <button class="btn btn-primary" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+        </div>
       </div>
     </div>
 
@@ -107,14 +127,24 @@
   <div class="row">
  
  
-   <!-- Bar Chart Column -->
-   <div class="col-12 mt-4 mb-2">
-    <div class="card bg-white shadow-sm border-info">
-      <div class="card-body">
-        <h2 class="card-title text-lg fw-bold text-info">Task Status Distribution</h2>
-        <canvas #taskStatusChart></canvas>
+ <div class="row">
+    <!-- Bar Chart Column -->
+    <div class="col-6 mt-4 mb-2">
+      <div class="card bg-white shadow-sm ">
+        <div class="card-body">
+          <h2 class="card-title text-lg fw-bold text-info">Task Status Distribution</h2>
+          <canvas #taskStatusChart></canvas>
+        </div>
       </div>
     </div>
-  </div>
+     <div class="col-6 mt-4 mb-2">
+      <div class="card bg-white shadow-sm ">
+        <div class="card-body">
+          <h2 class="card-title text-lg fw-bold text-info">Task Status Distribution</h2>
+          <canvas #pieChart></canvas>
+        </div>
+      </div>
+    </div>
+ </div>
   </div>
 </div>

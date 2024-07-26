@@ -6,40 +6,67 @@
         </div>
       </div>
     </div>
-  
-    <table class="table mt-3 table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">S.N</th>
-          <th scope="col">Employee Name</th>
-          <th scope="col">Project Name</th>
-          <th scope="col">Start Date</th>
-          <th scope="col">End Date</th>
-          <th scope="col">Project Status</th>
-          <th scope="col">Actions</th> <!-- New column for dropdown -->
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let empDetails of tasks; let i = index">
-          <tr *ngFor="let task of empDetails.taskDetails">
-            <td>{{ i + 1 }}</td>
-            <td>{{ empDetails.employee_name }}</td>
-            <td>{{ task.project_name }}</td>
-            <td>{{ task.start_date | date }}</td>
-            <td>{{ task.end_date | date }}</td>
-            <td>
-              <span [ngClass]="getBadgeClass(task.project_status)">{{ task.project_status }}</span>
-            </td>
-            <td>
-              <mat-select [(ngModel)]="task.selectedStatus" (selectionChange)="updateTaskStatus(task)">
-                <mat-option *ngFor="let status of ['done', 'pending', 'on progress']" [value]="status">
-                  {{ status }}
-                </mat-option>
-              </mat-select>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
+   
+  <div class="card mt-2" style="border-top: 3px solid blue;">
+      
+    <div class="card-body">
+      <!-- Page Size Dropdown -->
+      <div class="d-flex justify-content-between mb-3">
+        <div>
+          <label for="pageSizeSelect">Page Size:</label>
+          <select id="pageSizeSelect" class="form-select d-inline-block w-auto ml-2" (change)="onPageSizeChange($event)">
+            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+        <div>
+          <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)">
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table mt-3 table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">S.N</th>
+              <th scope="col" (click)="onSort('employee_name')">Employee Name</th>
+              <th scope="col">Project Name</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">End Date</th>
+              <th scope="col">Project Status</th>
+              <th scope="col">Actions</th> 
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let empDetails of tasks; let i = index">
+              <tr *ngFor="let task of empDetails.taskDetails">
+                <td>{{ i + 1 }}</td>
+                <td>{{ empDetails.employee_name }}</td>
+                <td>{{ task.project_name }}</td>
+                <td>{{ task.start_date | date }}</td>
+                <td>{{ task.end_date | date }}</td>
+                <td>
+                  <span [ngClass]="getBadgeClass(task.project_status)">{{ task.project_status }}</span>
+                </td>
+                <td>
+                  <mat-select [(ngModel)]="task.project_status" (selectionChange)="updateTaskStatus(task)">
+                    <mat-option *ngFor="let status of ['done', 'pending', 'on progress']" [value]="status">
+                      {{ status }}
+                    </mat-option>
+                  </mat-select>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+            <!-- Pagination Controls -->
+        <div class="d-flex justify-content-evenly">
+          <button class="btn btn-primary" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+         <div class="d-flex justify-content-center align-content-center">
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
+         </div>
+          <button class="btn btn-primary" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+        </div>
+    </div>
+  </div>
   </div>
   

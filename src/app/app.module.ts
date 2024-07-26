@@ -6,23 +6,26 @@ import { AppComponent } from './app.component';
 import { AdminPanelModule } from './modules/admin-panel/admin-panel.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+ 
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     AdminPanelModule,
+
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
-    })
+    }),
   
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], 
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),

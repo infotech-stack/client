@@ -4,10 +4,13 @@ export const environment = {
     name:"(DEV)",
     apiBaseUrl:"http://devUrl.com",
     // EMPLOYEE REGISTER 
+    getAllEmployee:`http://localhost:3000/api/employee-register/get-all-employee`,
     getEmployee:`http://localhost:3000/api/employee-register/get-employee`,
     insertEmployee:`http://localhost:3000/api/employee-register/insert-employee`,
     updateEmployee:`http://localhost:3000/api/employee-register/update-employee`,
     removeEmployee:`http://localhost:3000/api/employee-register/remove-employee`,
+    getEmployeeRole:`http://localhost:3000/api/employee-register/get-employee-role`,
+    getEmployeeAccess:`http://localhost:3000/api/employee-register/get-employee-access`,
     //LOGIN 
     login:`http://localhost:3000/api/employee-register/login`,
     logout:`http://localhost:3000/api/employee-register/logout`,
@@ -26,4 +29,10 @@ export const environment = {
     uploadFile:`http://localhost:3000/api/employee-register/upload`,
     postMessage:`http://localhost:3000/api/employee-register/post-message`,
     getMessage:`http://localhost:3000/api/employee-register/get-message`,
+    //WEBSOCKET URL
+    wsUrl:`http://localhost:4000/messages`,
+    postWebSocketMesage:`http://localhost:4000/messages/post-message`,
+    getWebSocketMesage:`http://localhost:4000/messages/get-message`,
+    websocketUploadFile:`http://localhost:4000/messages/upload-files`,
+    websocketDownloadFile:`http://localhost:4000/messages/download-files`,
 };

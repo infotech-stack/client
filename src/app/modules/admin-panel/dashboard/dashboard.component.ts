@@ -127,20 +127,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
     console.log(encryptedEmployeeFromStorage,'encript');
-    
-   
       const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
       console.log(decryptedEmployee);
-      
-     
       this.username = decryptedEmployee?.employee_name;
       this.employeeId = decryptedEmployee?.empId;
-      this.userRole = decryptedEmployee?.employee_role.join(', ');
+      this.userRole = decryptedEmployee?.employee_role?.join(', ');
       this.filterAccess = this.list.filter(item => decryptedEmployee?.employee_access.includes(item.label));
       if (!decryptedEmployee?.employee_role.includes('Admin')) {
         this.filterAccess.push(this.list.find(item => item.label === 'Task Reports'));
       }
-
       console.log(decryptedEmployee.employee_name);  
       console.log(decryptedEmployee.employee_role);  
   
@@ -197,10 +192,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.sidenav.toggle();
   }
   //* ------------------------------ Helper Function -----------------------*//
- decryptData = (encryptedData: any) => {
+   decryptData = (encryptedData: any) => {
     const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     return decryptedData;
-};
+   };
   //! -------------------------------  End  --------------------------------!//
 }

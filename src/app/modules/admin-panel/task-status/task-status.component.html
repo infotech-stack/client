@@ -1,5 +1,5 @@
 
-<div class="container mt-3">
+<!-- <div class="container mt-3">
     <div class="row">
       <div class="col-12">
         <div class="header-bar">
@@ -31,14 +31,14 @@
                 <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
             </div>
           </td> 
-        </tr> -->
+        </tr> 
         <ng-container *ngFor="let empDetails of tasks;let i=index">
           <tr *ngFor="let task of empDetails.taskDetails">
             <td>{{i+1}}</td>
-            <td>{{ empDetails.employee_name }}</td> <!-- Employee Name -->
-            <td>{{ task.project_name  }}</td> <!-- Project Name -->
-            <td>{{ task.start_date | date }}</td> <!-- Start Date -->
-            <td>{{ task.end_date  | date }}</td> <!-- End Date -->
+            <td>{{ empDetails.employee_name }}</td> <!-- Employee Name 
+            <td>{{ task.project_name  }}</td> <!-- Project Name 
+            <td>{{ task.start_date | date }}</td> <!-- Start Date 
+            <td>{{ task.end_date  | date }}</td> <!-- End Date 
             <td>
               <span [ngClass]="getBadgeClass(task.project_status)">{{ task.project_status }}</span>
             </td>
@@ -47,10 +47,78 @@
                 <button class="btn btn-sm btn-warning" (click)="editTask(task,empDetails)">Edit</button>
                 <button class="btn btn-sm btn-danger" (click)="deleteTask(task,empDetails)">Delete</button>
               </div>
-            </td> -->
+            </td> 
           </tr>
         </ng-container>
       </tbody>
     </table>
+  </div> -->
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="header-bar">
+          <h2 class="mb-0">TASK STATUS</h2>
+        </div>
+      </div>
+    </div>
   </div>
-  
+  <div class="container mt-3">
+   
+    <div class="card" style="border-top: 3px solid blue;">
+      <div class="card-body">
+        <!-- Page Size Dropdown -->
+        <div class="d-flex justify-content-between mb-3">
+          <div>
+            <label for="pageSizeSelect">Page Size:</label>
+            <select id="pageSizeSelect" class="form-select d-inline-block w-auto ml-2" (change)="onPageSizeChange($event)">
+              <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+            </select>
+          </div>
+          <div>
+            <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)">
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th scope="col" (click)="onSort('employee_name')">Employee Name</th>
+                <th scope="col" (click)="onSort('project_name')">Project Name</th>
+                <th scope="col" (click)="onSort('start_date')">Start Date</th>
+                <th scope="col" (click)="onSort('end_date')">End Date</th>
+                <th scope="col" (click)="onSort('project_status')">Project Status</th>
+                <!-- <th scope="col">Action</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let empDetails of tasks">
+                <tr *ngFor="let task of empDetails.taskDetails">
+                  <td>{{ empDetails.employee_name }}</td>
+                  <td>{{ task.project_name }}</td>
+                  <td>{{ task.start_date | date }}</td>
+                  <td>{{ task.end_date | date }}</td>
+                  <td>
+                    <span [ngClass]="getBadgeClass(task.project_status)">{{ task.project_status }}</span>
+                  </td>
+                  <!-- <td>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-warning" (click)="editTask(task, empDetails)">Edit</button>
+                      <button class="btn btn-sm btn-danger" (click)="deleteTask(task, empDetails)">Delete</button>
+                    </div>
+                  </td> -->
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-primary" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+          <div class="d-flex justify-content-center align-content-center">
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+           </div>
+          <button class="btn btn-primary" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>

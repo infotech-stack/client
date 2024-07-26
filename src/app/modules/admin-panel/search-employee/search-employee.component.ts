@@ -20,6 +20,12 @@ export class SearchEmployeeComponent implements OnInit {
     selectedEmployees: any;
     empId!:number;
     roles:any;
+    totalPages: number=1;
+    currentPage = 1;
+    pageSize:any = 10;
+    sortField = 'employee_name';
+    sortOrder = 'ASC';
+    search = '';
     //* ---------------------------  Constructor  ----------------------------*//
     constructor(private fb: FormBuilder,private _apiService:ApiService,private _dataSharing:DataSharingService) {
       this.searchForm = this.fb.group({
@@ -57,10 +63,9 @@ export class SearchEmployeeComponent implements OnInit {
       
     }
     getEmployees(){
-      this._apiService.getEmployee(this.empId,this.roles).subscribe({
+      this._apiService.getEmployee(this.empId,this.roles,this.currentPage, this.pageSize).subscribe({
         next: (res) => {
           console.log(res);
-          
           this.employees = res.data;
         },
         error: (err) => {}

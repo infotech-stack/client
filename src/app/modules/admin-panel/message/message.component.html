@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
   <div class="row mt-1">
     <div class="col-12">
       <div class="header-bar">
@@ -37,7 +37,7 @@
         </form>
       </div>
     </div>
-  </div>
+  </div> -->
 <!-- <div> 
   <--  <img [src]="imageUrl" alt="" style="width: 100px;height: 100px;">
     
@@ -62,7 +62,7 @@
   <button type="submit">Send Message</button>
 </form> -->
 
-<div class="container mt-4"  >
+<!-- <div class="container mt-4"  >
 
   <div *ngFor="let message of messageList" class="alert alert-info alert-dismissible fade show d-flex justify-content-between" role="alert">
    <div>
@@ -84,3 +84,214 @@
     </button>
   </div>
 </div>
+
+<div class="container mt-4" >
+        <form [formGroup]="chatForm">
+          <div>
+            <input type="text" class=" form-control " placeholder="enter message" formControlName="chat"/>
+          </div>
+          <div>
+            <button class="btn btn-primary" [disabled]="!chatForm.valid">Send</button>
+          </div>
+        </form>
+</div> -->
+
+
+
+
+
+<!-- 
+<ng-container *ngIf="!joinFlag else other">
+  <div class="container mt-5">
+    <div class="card p-3">
+      <h4>Enter your name to join</h4>
+      <form [formGroup]="nameForm">
+        <div class="form-group">
+          <input type="text" formControlName="name" class="form-control" placeholder="Enter your name">
+        </div>
+        <button type="submit" class="btn btn-primary mt-2" (click)="join()">Submit</button>
+      </form>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #other>
+  <div class="container mt-5">
+    <div class="card p-3">
+      <div *ngFor="let item of messagelist" class="mb-2">
+        <strong class="text-danger">{{item.name}} =></strong>
+        <span class="text-dark">{{item.text}}</span>
+      </div>
+      <strong>
+        {{typingUser}}
+      </strong>
+
+      <form [formGroup]="messageForm1" >
+        <div class="form-group">
+          <input type="text" class="form-control" formControlName="text" placeholder="Enter message" (input)="typing()">
+        </div>
+        <button type="submit" class="btn btn-primary mt-2" (click)="sendMessage()">Send</button>
+      </form>
+    </div>
+  </div>
+</ng-template> -->
+<!-- <div class="flex flex-col h-[95%]">
+  <!-- Header -
+  
+   <div class="d-flex justify-content-between">
+   <div class="d-flex justify-content-center align-content-center gap-1">
+    <img class="w-[50px] h-[50px] rounded" src="https://th.bing.com/th/id/R.1a16b384d527fe609dbe25218b162d2f?rik=p6I68csK9JTkbA&riu=http%3a%2f%2fwww.pngmart.com%2ffiles%2f11%2fChat-Logo-PNG-Pic.png&ehk=H%2bgd0iuCU0QpHu%2bFxpBNfUiIKVRdB2EmBLjNpiFrHqA%3d&risl=&pid=ImgRaw&r=0" alt="logo">
+  <div class="d-flex align-content-center justify-content-center">
+    <h3 class="text-xl font-bold " >Chat Application</h3>
+  </div>
+   </div>
+    <div class="flex items-center space-x-4">
+        <button class="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded">Logout</button>
+    </div>
+   </div>
+  
+
+  <div class="flex flex-1">
+      <!-- Sidebar 
+      <aside class="w-25 bg-light p-4">
+        <h2 class="text-lg font-weight-semibold mb-4">Contacts</h2>
+        <ul class="list-unstyled">
+          <li *ngFor="let contact of contacts" class="d-flex align-items-center p-2 gap-1 rounded hover-bg-light">
+            <div class="avatar mr-3 d-flex align-items-center justify-content-center bg-primary text-white rounded-circle">
+              {{ contact.name.charAt(0) }}
+            </div>
+           <span> {{ contact.name }}</span>
+           <hr>
+          </li>
+         
+        </ul>
+      </aside>
+      
+
+      <!-- Main Content -
+      <main class="flex-1 p-4 bg-gray-100">
+          <div class="h-full overflow-y-auto">
+              <div class="space-y-4">
+                  <div class="flex items-start">
+                      <div class="bg-blue-500 text-white p-2 rounded-lg">Hello!</div>
+                  </div>
+                  <div class="flex items-start justify-end">
+                      <div class="bg-gray-300 p-2 rounded-lg">Hi there!</div>
+                  </div>
+                  <!-- More messages can be added here 
+              </div>
+          </div>
+
+          <!-- Input Box -
+          <div class="flex items-center mt-4 gap-1">
+              <input type="text" class="form-control" placeholder="Type your message...">
+              <button class="btn btn-primary d-flex justify-content-center align-content-center">
+                <mat-icon>send</mat-icon>
+              </button>
+          </div>
+      </main>
+  </div>
+</div> -->
+<div class="d-flex flex-column h-100">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
+    <div class="d-flex align-items-center">
+      <img class="rounded" src="https://th.bing.com/th/id/R.1a16b384d527fe609dbe25218b162d2f?rik=p6I68csK9JTkbA&riu=http%3a%2f%2fwww.pngmart.com%2ffiles%2f11%2fChat-Logo-PNG-Pic.png&ehk=H%2bgd0iuCU0QpHu%2bFxpBNfUiIKVRdB2EmBLjNpiFrHqA%3d&risl=&pid=ImgRaw&r=0" alt="logo" style="width: 50px; height: 50px;">
+      <h3 class="ml-3 mb-0">Chat Application</h3>
+    </div>
+    <button mat-icon-button class=" d-md-none" (click)="toggleSidebar()">
+    <mat-icon> menu</mat-icon> 
+    </button>
+    <button mat-icon-button class=" d-none d-md-block">
+      
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+
+  <div class="d-flex flex-1">
+    <!-- Sidebar -->
+    <aside [ngClass]="{'d-none': !sidebarVisible, 'd-md-block': sidebarVisible}" class="sidebar bg-light p-4  min-vh-70" style="height: 75vh;">
+      <h2 class="h5 font-weight-bold mb-4 sticky-top">Contacts</h2>
+      <ul class="list-unstyled overflow-scroll h-[65vh]">
+        <li *ngFor="let contact of employees" class="d-flex align-items-center p-2 rounded hover-bg-light cursor-pointer" (click)="selectContact(contact)">
+          <div class="avatar mr-3 d-flex align-items-center justify-content-center bg-primary text-white rounded-circle" style="width: 40px; height: 40px;">
+            {{ contact.employee_name.charAt(0) }}
+          </div>
+          <span>{{ contact.employee_name }}</span>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 bg-gray-100" style="height: 80vh;">
+      <div *ngIf="selectedContact; else selectUserMessage" class="h-100 d-flex flex-column">
+        <div #chatWindow  class="chat-window flex-grow-1 overflow-auto">
+          <div *ngFor="let message of messages" class="d-flex mb-2" #latestMessage [ngClass]="{'justify-content-end': message.sender_id === empId, 'justify-content-start': message.sender_id !== empId} " >
+            <div [ngClass]="{'bg-primary text-white': message.sender_id === empId, 'bg-white': message.sender_id !== empId}" class="p-2 rounded">
+              <div *ngIf="message.fileUrl">
+                <img [src]="message.fileUrl" alt="file">
+                <a [href]="message.fileUrl" target="_blank" class="text-white w-[60px] h-[60px]">{{ message.message }}</a>
+              </div>
+              <div *ngIf="!message.fileUrl">
+                {{ message.message }} <span class="">{{ formatTimestamp(message.timestamp) }}</span>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+        <div class="d-flex mt-3 gap-2 " >
+          <mat-menu #fileMenu="matMenu">
+            <button mat-menu-item (click)="selectFileType('image')">
+              <mat-icon>image</mat-icon> Image
+            </button>
+            <button mat-menu-item (click)="selectFileType('video')">
+              <mat-icon>video_library</mat-icon> Video
+            </button>
+            <button mat-menu-item (click)="selectFileType('audio')">
+              <mat-icon>audio_file</mat-icon> Audio
+            </button>
+            <button mat-menu-item (click)="selectFileType('document')">
+              <mat-icon>description</mat-icon> Document
+            </button>
+            <button mat-menu-item (click)="selectFileType('contact')">
+              <mat-icon>contact_phone</mat-icon> Contact
+            </button>
+          </mat-menu>
+          
+          <!-- File upload trigger button -->
+          <button mat-icon-button [matMenuTriggerFor]="fileMenu">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+          
+          <!-- File input -->
+          <input type="file" (change)="onSelectFiles($event)" [attr.accept]="fileType" style="display: none;" #fileInput />
+          
+          <button mat-icon-button (click)="isEmojiPickerVisible = !isEmojiPickerVisible">
+            <mat-icon>sentiment_satisfied_alt</mat-icon>
+          </button>
+          <br /><emoji-mart
+            class="emoji-mart position-absolute bottom-[7rem] "
+            *ngIf="isEmojiPickerVisible"
+            (emojiSelect)="addEmoji($event)"
+            title="Choose your emoji"
+          ></emoji-mart>
+          <input type="text" class="form-control" [(ngModel)]="newMessage" placeholder="Type your message...">
+          <button mat-icon-button class="btn btn-primary ml-2" (click)="sendMessage()">
+            <mat-icon>send</mat-icon>
+          </button>
+  
+        </div>
+      </div>
+      <ng-template #selectUserMessage>
+        <div class="d-flex justify-content-center align-items-center h-100">
+          <h4>Select a user to message</h4>
+        </div>
+      </ng-template>
+    </main>
+  </div>
+ 
+</div>
+
+
+
+

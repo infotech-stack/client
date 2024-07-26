@@ -28,7 +28,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
    
   }
-
   //* ----------------------------  APIs Methods  --------------------------*//
  
   onSubmit() {
@@ -56,7 +55,6 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-  
   //* --------------------------  Public methods  --------------------------*//
   encryptData = (data: any) => {
     console.log(data,'login');

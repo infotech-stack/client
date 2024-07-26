@@ -18,6 +18,8 @@ import { EmployeeAttendenceComponent } from './employee-attendence/employee-atte
 import { MessageComponent } from './message/message.component';
 import { HttpClientModule } from '@angular/common/http';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { PickerModule } from "@ctrl/ngx-emoji-mart";
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -30,7 +32,8 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
     TaskReportsComponent,
     EmployeeComponent,
     EmployeeAttendenceComponent,
-    MessageComponent
+    MessageComponent,
+    ContextMenuComponent
   ],
   imports: [
     CommonModule,
@@ -39,6 +42,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
     ReactiveFormsModule,
     FormsModule,
     SharedModule,
+    PickerModule,
     NgIf,
     NgFor,
     

@@ -44,7 +44,7 @@
     </div>
   </mat-toolbar>
 
-  <mat-sidenav-container  class="h-[calc(100vh_-_37px)] overflow-hidden">
+  <mat-sidenav-container  class="h-[calc(100vh_-_84px)] overflow-hidden">
     <mat-sidenav #sidenav style="width: 250px;" 
     [mode]="mobileQuery.matches ? 'over' : 'side'"
     [opened]="mobileQuery.matches ? false : true"
@@ -72,6 +72,11 @@
     <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
+  <footer class="bg-secondary">
+    <div class="d-flex justify-content-center align-content-center">
+        <span>RKS INFOTECH PVT LTD</span>
+    </div>
+  </footer>
   <!-- <mat-sidenav-container class="h-screen-3/4 overflow-hidden">
     <mat-sidenav #sidenav style="width: 210px;" class="bg-primary"
                  [mode]="mobileQuery.matches ? 'over' : 'side'"

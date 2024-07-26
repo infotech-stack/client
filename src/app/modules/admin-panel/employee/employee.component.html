@@ -108,8 +108,8 @@
                 <label for="role" class="form-label fw-bold">Select The Role</label>
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-select id="role" formControlName="role" multiple placeholder="role">
-                    <mat-option *ngFor="let role of EmployeeRole" [value]="role">
-                      {{role}}
+                    <mat-option *ngFor="let role of employeeRole" [value]="role.role_id">
+                      {{role.role_name}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -118,15 +118,15 @@
                 <label for="access" class="form-label fw-bold">Select The Access</label>
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-select id="access" formControlName="access" multiple placeholder="access">
-                    <mat-option *ngFor="let access of EmployeeAccess" [value]="access">
-                      {{access}}
+                    <mat-option *ngFor="let access of employeeAccess" [value]="access.access_id">
+                      {{access.access_name}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
               <div class="col-12 col-md-4 mb-3">
                 <label for="password" class="form-label fw-bold">Password</label>
-                <input type="password" class="form-control" id="password" formControlName="password" placeholder="password">
+                <input type="password" class="form-control" id="password" formControlName="password" placeholder="password" >
                 <div *ngIf="formControls['password'].invalid && (formControls['password'].dirty || formControls['password'].touched)" class="text-danger">
                   <div *ngIf="formControls['password'].errors?.['required']">Password is required.</div>
                   <div *ngIf="formControls['password'].errors?.['minlength']">Password must be at least 6 characters.</div>
@@ -134,10 +134,10 @@
               </div>
               <div class="col-12 col-md-4 mb-3">
                 <label for="confirmPassword" class="form-label fw-bold">Confirm Password</label>
-                <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" placeholder="confirm-password">
-                <div *ngIf="formControls['confirmPassword'].invalid && (formControls['confirmPassword'].dirty || formControls['confirmPassword'].touched)" class="text-danger">
+                <input type="password" class="form-control"  id="confirmPassword"  formControlName="confirmPassword" placeholder="confirm-password">
+                <div *ngIf="formControls['confirmPassword'].invalid && (formControls['confirmPassword'].dirty || formControls['confirmPassword'].touched )" class="text-danger">
                   <div *ngIf="formControls['confirmPassword'].errors?.['required']">Confirm Password is required.</div>
-                  <div *ngIf="formControls['confirmPassword'].errors?.['notSame']">Passwords do not match.</div>
+                  <div *ngIf="employeeForm.errors?.['notSame'] && formControls['confirmPassword'].touched">Passwords do not match.</div>
                 </div>
               </div>
             </div>
@@ -157,12 +157,27 @@
 <div class="container mt-3">
   <div class="card" style="border-top: 3px solid blue;">
     <div class="card-body">
+         <!-- Page Size Dropdown -->
+         <div class="d-flex justify-content-between mb-3">
+          <div>
+            <label for="pageSizeSelect">Page Size:</label>
+            <select id="pageSizeSelect" class="form-control d-inline-block w-auto ml-2" (change)="onPageSizeChange($event)">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+          <div>
+            <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)">
+          </div>
+        </div>
       <div class="table-responsive">
         <table class="table table-hover table-bordered">
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">UserName</th>
+              <th scope="col" (click)="onSort('employee_name')">UserName</th>
               <th scope="col">Designation</th>
               <th scope="col">CabinNo</th>
               <th scope="col">DateOfJoining</th>
@@ -201,6 +216,14 @@
             </tr>
           </tbody>
         </table>
+      </div>
+       <!-- Pagination Controls -->
+       <div class="d-flex justify-content-between">
+        <button class="btn btn-primary" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+        <div class="d-flex justify-content-center align-content-center">
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
+         </div>
+        <button class="btn btn-primary" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
       </div>
     </div>
   </div>
