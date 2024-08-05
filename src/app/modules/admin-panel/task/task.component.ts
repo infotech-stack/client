@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../shared/services/api/api.service';
-import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
-import { MatSelectChange } from '@angular/material/select';
 import * as CryptoJS from 'crypto-js';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared/dialog/confirm-dialog/confirm-dialog.component';
+import { SnackBarService } from '../../../shared/services/snackbar/snackbar.service';
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
@@ -17,41 +18,42 @@ export class TaskComponent implements OnInit {
   //* -----------------------  Variable Declaration  -----------------------*//
   taskForm: FormGroup;
   searchForm: FormGroup;
-  // employees = [
-  //   { id: 1, name: 'John Doe' },
-  //   { id: 2, name: 'Jane Smith' },
-  //   { id: 3, name: 'Michael Johnson' },
-  //   { id: 4, name: 'Emily Brown' },
-  //   { id: 5, name: 'David Wilson' }
-  // ];
   employees: any;
   filesToUpload: File[] = [];
   selectedEmployeeIds: any[] = [];
   empId!: number;
-  taskId!:number;
-  roles:any
-  taskDetails:any;
-  addFlag:boolean=true;
-  editFlag:boolean=false;
-  taskStatus:string[]=[
-    'pending','done','on progress'
+  taskId!: number;
+  roles: any
+  taskDetails: any;
+  addFlag: boolean = true;
+  editFlag: boolean = false;
+  taskStatus: string[] = [
+    'pending', 'done', 'on progress'
   ]
+  selectedFiles!: File[];
+  selectedEmpid!: number;
   totalPages: number = 1;
   currentPage: number = 1;
   pageSize: any = 5;
   sortField: string = 'employee_name';
   sortOrder: string = 'ASC';
   search: string = '';
-  // taskDetails: any[] = [];
+  alertSuccess: boolean = false;
+  alertError: boolean = false;
+  alertMessage: string = '';
   pageSizeOptions: (number | string)[] = [5, 10, 20, 'all'];
+  is_loading: boolean = false;
+  message_id!:number;
   //* ---------------------------  Constructor  ----------------------------*//
-  constructor(private fb: FormBuilder, private _apiService: ApiService,private _dataSharing:DataSharingService, private cdr:ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private _apiService: ApiService, private cdr: ChangeDetectorRef, public _dialog: MatDialog, private _snakbar: SnackBarService) {
     this.taskForm = this.fb.group({
       projectName: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       projectStatus: ['', Validators.required],
       assignTo: ['', Validators.required],
+      fileAttachment: [null],
+      messageDescription: ['', Validators.required],
     });
     this.searchForm = this.fb.group({
       search: ['']
@@ -59,68 +61,33 @@ export class TaskComponent implements OnInit {
   }
   //* -------------------------  Lifecycle Hooks  --------------------------*//  
   ngOnInit(): void {
-    // this._dataSharing.getEmployeeDatils.subscribe({
-    //   next: (data) => {
-    //     this.empId=data.empId;
-    //     this.roles = data.employee_role;
-    //     this.getTaskByRole();
-    //   },
-    //   error: (err) => {}
-    // });
     const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
     const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
-      this.empId=decryptedEmployee.empId;
-      this.roles=decryptedEmployee.employee_role;
-      this.getTaskByRole();
+    this.empId = decryptedEmployee.empId;
+    this.roles = decryptedEmployee.employee_role;
+    this.getTaskByRole();
     this.getEmoployee();
   }
   //* ----------------------------  APIs Methods  --------------------------*//
-  // onFileChange(event: Event): void {
-  //   const input = event.target as HTMLInputElement;
-  //   if (input.files) {
-  //     for (let i = 0; i < input.files.length; i++) {
-  //       this.filesToUpload.push(input.files[i]);
-  //     }
-  //     this.taskForm.patchValue({
-  //       fileAttachments: this.filesToUpload
-  //     });
-  //   }
-  // }
   getEmoployee() {
-    this._apiService.getEmployee(this.empId,this.roles,this.currentPage, this.pageSize).subscribe({
-
-
+    this._apiService.getAllEmployee().subscribe({
       next: (res) => {
         this.employees = res.data;
-        console.log(this.employees);
-
+        this.alertMessage = res.message;
+        this.alertSuccess = true;
+        setTimeout(() => {
+          this.alertSuccess = false;
+        }, 5000)
       },
       error: (err) => {
+        this.alertError = true;
+        setTimeout(() => {
+          this.alertError = false;
+        }, 5000)
         throw err;
       }
     })
   }
-  // if (this.taskForm.valid) {
-  //   const formData = new FormData();
-  //   formData.append('projectName', this.taskForm.get('projectName')?.value);
-  //   formData.append('startDate', this.taskForm.get('startDate')?.value);
-  //   formData.append('endDate', this.taskForm.get('endDate')?.value);
-  //   formData.append('projectStatus', this.taskForm.get('projectStatus')?.value);
-  //   formData.append('taskName', this.taskForm.get('taskName')?.value);
-  //   formData.append('assignTo', this.taskForm.get('assignTo')?.value);
-  //   console.log(formData);
-
-  //   // Append multiple files
-  //   for (let file of this.filesToUpload) {
-  //     formData.append('fileAttachments', file, file.name);
-  //   }
-
-  //   this._apiService.assignTask(formData).subscribe(response => {
-  //     console.log('Task assigned successfully', response);
-  //   }, error => {
-  //     console.error('Error assigning task', error);
-  //   });
-  // }
   getEmployeeId(value: string[]): void {
     let selectedEmployeeIds: string[] = [];
     if (value.includes('all')) {
@@ -133,12 +100,56 @@ export class TaskComponent implements OnInit {
         })
         .filter(empId => empId !== null) as string[];
     }
-    console.log('Selected Employee IDs:', selectedEmployeeIds);
 
     this.taskForm.patchValue({ assignTo: selectedEmployeeIds });
     this.selectedEmployeeIds = selectedEmployeeIds;
   }
+  onSubmit() {
+    if (this.taskForm.valid) {
+      const selectedEmployeeNames = this.taskForm.controls['assignTo'].value;
+      this.getEmployeeId(selectedEmployeeNames);
+      const { projectName, startDate, endDate, projectStatus, assignTo, messageDescription } = this.taskForm.value;
 
+      const files = this.selectedFiles;
+      this.is_loading = true;
+      this._apiService.sendMessage(projectName, startDate, endDate, projectStatus, assignTo, messageDescription, files).subscribe(
+        response => {
+ 
+         
+          this.is_loading = false;
+          const messageObj = {
+            start_date: this.taskForm.controls['startDate'].value,
+            end_date: this.taskForm.controls['endDate'].value,
+            project_status: this.taskForm.controls['projectStatus'].value,
+            message_description: this.taskForm.controls['messageDescription'].value,
+            project_name: this.taskForm.controls['projectName'].value,
+            filename: response.data,
+            empId: this.selectedEmployeeIds,
+            send_by: this.empId
+          }
+          this.postMessage(messageObj);
+
+        },
+        error => {
+          this.is_loading = false;
+          console.error('Error sending message', error);
+        }
+      );
+    }
+  }
+  postMessage(messageObj: any) {
+
+    
+    this._apiService.postMessage(messageObj).subscribe({
+      next: (res) => {
+
+        this.getTaskByRole();
+      },
+      error: (err) => {
+        throw err;
+      }
+    })
+  }
   taskAssign(): void {
     if (this.taskForm.valid) {
       const selectedEmployeeNames = this.taskForm.controls['assignTo'].value;
@@ -148,21 +159,20 @@ export class TaskComponent implements OnInit {
         start_date: this.taskForm.controls['startDate'].value,
         end_date: this.taskForm.controls['endDate'].value,
         project_status: this.taskForm.controls['projectStatus'].value,
-        assignTo: this.selectedEmployeeIds
+        assignTo: this.selectedEmployeeIds,
+
 
       };
-      
-      console.log(formData);
+
+
 
       this._apiService.taskAssignToEmployee(formData).subscribe({
         next: (res) => {
-          console.log(res);
-          this.getTaskByRole();
-          this.cdr.detectChanges(); 
-          this.taskForm.reset();
+ 
+
         },
         error: (err) => {
-          console.error(err);
+          throw err;
         }
       });
     } else {
@@ -171,76 +181,116 @@ export class TaskComponent implements OnInit {
   }
   getTaskByRole() {
     const limit = this.pageSize === 'all' ? -1 : Number(this.pageSize);
-
-    this._apiService.getTaskByRole(this.empId,this.roles,this.currentPage, limit).subscribe({
+    this.is_loading = true;
+    this._apiService.getTaskByRole(this.empId, this.roles, this.currentPage, this.pageSize).subscribe({
       next: (res) => {
+        this.is_loading = false;
+        this.addFlag = true;
+        this.editFlag = false;
         this.taskDetails = res.data;
         this.totalPages = limit === -1 ? 1 : Math.ceil(res.total / Number(this.pageSize));
+        this._snakbar.success('Data Fetch successfully');
       },
       error: (err) => {
-        console.error(err);
+        this.is_loading = false;
+        this._snakbar.error('Something Went Wrong');
+        throw err;
       }
     });
   }
-  updateTask(){
+  updateTask() {
     const selectedEmployeeNames = this.taskForm.controls['assignTo'].value;
-      this.getEmployeeId(selectedEmployeeNames);
-    let taskObj={
-      project_name:this.taskForm.controls['projectName'].value,
-      start_date:this.taskForm.controls['startDate'].value,
-      end_date:this.taskForm.controls['endDate'].value,
-      project_status:this.taskForm.controls['projectStatus'].value,
-      assignTo:this.selectedEmployeeIds
-    }
-    console.log(taskObj);
-    
-    this._apiService.updatetask(this.taskId,this.empId,taskObj).subscribe({
+    this.getEmployeeId(selectedEmployeeNames);
+    const files = this.selectedFiles;
+    const { projectName, startDate, endDate, projectStatus, assignTo, messageDescription } = this.taskForm.value;
+    this.is_loading = true;
+    this._apiService.sendMessage(projectName, startDate, endDate, projectStatus, assignTo, messageDescription, files).subscribe({
       next: (res) => {
-        console.log(res);
-        this.getTaskByRole();
-        this.taskForm.reset();
+
+        this.is_loading = false;
+     
+        const messageObj = {
+          start_date: this.taskForm.controls['startDate'].value,
+          end_date: this.taskForm.controls['endDate'].value,
+          project_status: this.taskForm.controls['projectStatus'].value,
+          message_description: this.taskForm.controls['messageDescription'].value,
+          project_name: this.taskForm.controls['projectName'].value,
+          filename: res.data,
+          empId: this.taskForm.controls['assignTo'].value,
+          send_by: this.empId
+        }
+        this.updateTask1(messageObj)
       },
-      error:(error)=>{
+      error: (error) => {
+        this.is_loading = false;
+        throw error;
+      }
+    });
+  }
+  updateTask1(messageObj: any) {
+    this._apiService.updatetask(this.taskId, this.selectedEmpid, this.message_id, messageObj).subscribe({
+      next: (res) => {
+ 
+        this.taskForm.reset();
+        this.alertMessage = '';
+        
+        this.alertMessage = res.message;
+        this.alertSuccess = true;
+        this.getTaskByRole();
+        setTimeout(() => {
+          this.alertSuccess = false;
+        }, 5000)
+      },
+      error: (error) => {
+        this.alertMessage = error;
+        this.alertError = true;
+        setTimeout(() => {
+          this.alertError = false;
+        }, 5000)
         throw error;
       }
     });
   }
   editTask(item: any, employee: any) {
-    this.addFlag=false;
-    this.editFlag=true;
-    this.empId = employee.empId;
+    this.addFlag = false;
+    this.editFlag = true;
+
+    this.selectedEmpid = employee.empId;
+    this.message_id=item.message_id;
     this.taskId = item.task_id;
     const assignToNames = [employee.employee_name];
     const start = new Date(item.start_date).toISOString().split('T')[0];
     const end = new Date(item.end_date).toISOString().split('T')[0];
+
+
     this.taskForm.patchValue({
       projectName: item.project_name,
       startDate: start,
       endDate: end,
       projectStatus: item.project_status,
-      assignTo: assignToNames 
+      assignTo: assignToNames,
+      messageDescription: item.message_description
     });
-    console.log(this.taskForm);
-    
-  } 
-  deleteTask(item:any,employee:any){
 
-    this._apiService.deleteTask(item.task_id,employee.empId).subscribe({
+
+  }
+  deleteTask(item: any, employee: any) {
+    this.is_loading = true;
+    this._apiService.deleteTask(item.task_id, employee.empId).subscribe({
       next: (res) => {
-        console.log(res);
+        this.is_loading = false;
         this.getTaskByRole();
       },
-      error:(err)=>{throw err}
+      error: (err) => {
+        this.is_loading = false;
+        throw err;
+      }
     });
   }
-  // updateTask(item:any){
-  //   this._apiService.updatetask().subscribe({
-  //     next: (res) => {},
-  //     error: (err) => {}
-  //   })
-  // }
   //* --------------------------  Public methods  --------------------------*//
-  get formControls() { return this.taskForm.controls; }
+  get formControls() {
+    return this.taskForm.controls;
+  }
   getBadgeClass(status: string): string {
     switch (status) {
       case 'done':
@@ -253,40 +303,56 @@ export class TaskComponent implements OnInit {
         return '';
     }
   }
-  
   //* ------------------------------ Helper Function -----------------------*//
   decryptData = (encryptedData: any) => {
     const bytes = CryptoJS.AES.decrypt(encryptedData, 'secret_key');
     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     return decryptedData;
-};
-onPageSizeChange(event: any) {
-  this.pageSize = event.target.value;
-  this.currentPage = 1; // Reset to the first page on page size change
-  this.getTaskByRole();
-}
-
-onPageChange(page: number) {
-  if (page > 0 && page <= this.totalPages) {
-    this.currentPage = page;
+  };
+  onPageSizeChange(event: Event) {
+    const selectedSize = (event.target as HTMLSelectElement).value;
+    this.pageSize = selectedSize === 'all' ? 'all' : parseInt(selectedSize, 10);
+    this.currentPage = 1;
     this.getTaskByRole();
   }
-}
+  onPageChange(page: number) {
+    if (page > 0 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.getTaskByRole();
+    }
+  }
+  onSearchChange(event: any) {
+    this.search = event.target.value;
+    this.currentPage = 1;
+    this.getTaskByRole();
+  }
+  onSort(field: string) {
+    this.sortField = field;
+    this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC'; // Toggle sort order
+    this.getTaskByRole();
+  }
+  onSearch(): void {
+    this.currentPage = 1; // Reset to first page on new search
+    this.getTaskByRole();
+  }
+  onSelectFiles(event: any) {
+    if (event.target.files) {
+      this.selectedFiles = Array.from(event.target.files);
+      console.log(this.selectedFiles, 'file');
+    }
+  }
+  openDialog(item: any, employee: any) {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: { employee_name: employee.employee_name }
+    });
 
-onSearchChange(event: any) {
-  this.search = event.target.value;
-  this.currentPage = 1; // Reset to the first page on search change
-  this.getTaskByRole();
-}
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteTask(item, employee);
 
-onSort(field: string) {
-  this.sortField = field;
-  this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC'; // Toggle sort order
-  this.getTaskByRole();
-}
-onSearch(): void {
-  this.currentPage = 1; // Reset to first page on new search
-  this.getTaskByRole();
-}
+      }
+    });
+  }
   //! -------------------------------  End  --------------------------------!//
 }

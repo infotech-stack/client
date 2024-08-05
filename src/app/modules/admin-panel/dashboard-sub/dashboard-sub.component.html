@@ -1,3 +1,4 @@
+<app-loading-spinner *ngIf="is_loading"></app-loading-spinner>
 <div class="container">
   <div class="row mt-1">
     <div class="col-12">
@@ -6,70 +7,71 @@
       </div>
     </div>
   </div>
-  <div class="row row-cols-1 row-cols-md-3 g-4 mt-2 ">
+  <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
     <!-- In Progress Tasks -->
-    <div class="col">
-      <div class="card bg-white shadow-sm " style="border-left: 3px solid blue;">
-        <div class="card-body">
+    <div class="col animate__flipOutX">
+      <div class="card bg-white shadow-sm rounded-2 card-task" (click)="openTaskDetails('on progress')">
+        <div class="card-body bg-primary">
           <div class="d-flex align-items-center justify-content-between mb-4">
-            <h2 class="card-title text-lg fw-bold text-primary">In Progress Tasks</h2>
+            <h2 class="card-title text-lg fw-bold text-white">In Progress Tasks</h2>
             <span class="text-primary">
-              <mat-icon class="text-primary">description</mat-icon>
+              <mat-icon class="text-white">description</mat-icon>
             </span>
           </div>
-          <p class="text-4xl fw-bold text-primary">{{taskCounts.inProgress}}</p>
+          <p class="text-4xl fw-bold text-white">{{taskCounts.onProgress}}</p>
         </div>
       </div>
     </div>
-
+  
     <!-- Completed Tasks -->
-    <div class="col">
-      <div class="card bg-white shadow-sm " style="border-left: 3px solid green;">
-        <div class="card-body">
+    <div class="col animate__flipOutX">
+      <div class="card bg-white shadow-sm card-task" (click)="openTaskDetails('done')">
+        <div class="card-body bg-success">
           <div class="d-flex align-items-center justify-content-between mb-4">
-            <h2 class="card-title text-lg fw-bold text-success">Completed Tasks</h2>
+            <h2 class="card-title text-lg fw-bold text-white">Completed Tasks</h2>
             <span class="text-success">
-              <mat-icon class="text-success">check_circle</mat-icon>
+              <mat-icon class="text-white">check_circle</mat-icon>
             </span>
           </div>
-          <p class="text-4xl fw-bold text-success">{{taskCounts.done}}</p>
+          <p class="text-4xl fw-bold text-white">{{taskCounts.done}}</p>
         </div>
       </div>
     </div>
-
+  
     <!-- Pending Tasks -->
-    <div class="col">
-      <div class="card bg-white shadow-sm " style="border-left: 3px solid yellow;">
-        <div class="card-body">
+    <div class="col animate__flipOutX">
+      <div class="card bg-white shadow-sm card-task" (click)="openTaskDetails('pending')">
+        <div class="card-body bg-warning">
           <div class="d-flex align-items-center justify-content-between mb-4">
-            <h2 class="card-title text-lg fw-bold text-warning">Pending Tasks</h2>
-            <span class="text-warning">
-              <mat-icon class="text-warning">attach_file</mat-icon>
+            <h2 class="card-title text-lg fw-bold text-white">Pending Tasks</h2>
+            <span class="text-white">
+              <mat-icon class="text-white">attach_file</mat-icon>
             </span>
           </div>
-          <p class="text-4xl fw-bold text-warning">{{taskCounts.pending}}</p>
+          <p class="text-4xl fw-bold text-white">{{taskCounts.pending}}</p>
         </div>
       </div>
     </div>
-
+  
     <!-- All Tasks -->
-    <div class="col">
-      <div class="card bg-white shadow-sm " style="border-left: 3px solid purple;">
-        <div class="card-body">
+    <div class="col animate__flipOutX">
+      <div class="card bg-white shadow-sm card-task" (click)="openTaskDetails('all')">
+        <div class="card-body" style="background-color: purple;">
           <div class="d-flex align-items-center justify-content-between mb-4">
-            <h2 class="card-title text-lg fw-bold text-purple">All Tasks</h2>
-            <span class="text-purple">
-              <mat-icon class="" style="color: purple;">list_alt</mat-icon>
+            <h2 class="card-title text-lg fw-bold text-white">All Tasks</h2>
+            <span class="text-white">
+              <mat-icon class="" style="color: white;">list_alt</mat-icon>
             </span>
           </div>
-          <p class="text-4xl fw-bold text-purple">{{taskCounts.all}}</p>
+          <p class="text-4xl fw-bold text-white">{{taskCounts.all}}</p>
         </div>
       </div>
     </div>
   </div>
+  
 
   <!-- Row for Table and Bar Chart -->
-  <div class="row mt-4">
+  <div class="row mt-4 animate__slideInUp">
     <!-- Table Column -->
     <div class="col-12">
       <div class="card bg-white shadow-sm ">
@@ -83,11 +85,12 @@
             </select>
           </div>
           <div>
-            <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)">
+            <!-- <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)"> -->
           </div>
         </div>
           <h2 class="card-title text-lg fw-bold text-dark">Task Details</h2>
-          <table class="table">
+        <div class="table-responsive">
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th>S.N</th>
@@ -106,20 +109,32 @@
                   <td>{{ task.project_name }}</td> <!-- Project Name -->
                   <td>{{ task.start_date | date }}</td> <!-- Start Date -->
                   <td>{{ task.end_date  | date}}</td> <!-- End Date -->
-                  <td>{{ task.project_status }}</td> <!-- Project Status -->
+                  <td>
+                    <span [ngClass]="getBadgeClass(task.project_status)">{{ task.project_status }}</span>
+                  </td>
                 </tr>
               </ng-container>
             </tbody>
           </table>
         </div>
-         <!-- Pagination Controls -->
-         <div class="d-flex justify-content-center gap-2">
-          <button class="btn btn-primary" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-         <div class="d-flex justify-content-center align-content-center">
-          <span>Page {{ currentPage }} of {{ totalPages }}</span>
-         </div>
-          <button class="btn btn-primary" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
         </div>
+         <!-- Pagination Controls -->
+         <nav aria-label="Page navigation example" class="mb-3">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage - 1)" tabindex="-1" aria-disabled="currentPage === 1">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item"><span class="page-link">Page {{ currentPage }} of {{ totalPages }}</span></li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        
       </div>
     </div>
 
@@ -127,24 +142,27 @@
   <div class="row">
  
  
- <div class="row">
-    <!-- Bar Chart Column -->
-    <div class="col-6 mt-4 mb-2">
-      <div class="card bg-white shadow-sm ">
-        <div class="card-body">
-          <h2 class="card-title text-lg fw-bold text-info">Task Status Distribution</h2>
-          <canvas #taskStatusChart></canvas>
+    <div class="row">
+      <!-- Bar Chart Column -->
+      <div class="col-12 col-md-6 mt-4 mb-2">
+        <div class="card bg-white shadow-sm">
+          <div class="card-body">
+            <h2 class="card-title text-lg fw-bold text-black">Task Status Distribution</h2>
+            <canvas #taskStatusChart></canvas>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Pie Chart Column -->
+      <div class="col-12 col-md-6 mt-4 mb-2">
+        <div class="card bg-white shadow-sm">
+          <div class="card-body">
+            <h2 class="card-title text-lg fw-bold text-black">Task Status Distribution</h2>
+            <canvas #pieChart></canvas>
+          </div>
         </div>
       </div>
     </div>
-     <div class="col-6 mt-4 mb-2">
-      <div class="card bg-white shadow-sm ">
-        <div class="card-body">
-          <h2 class="card-title text-lg fw-bold text-info">Task Status Distribution</h2>
-          <canvas #pieChart></canvas>
-        </div>
-      </div>
-    </div>
- </div>
+    
   </div>
 </div>

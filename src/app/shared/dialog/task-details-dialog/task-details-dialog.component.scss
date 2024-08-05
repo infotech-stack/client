@@ -1,0 +1,50 @@
+.task-card {
+    margin-bottom: 10px;
+  }
+  
+  .mat-expansion-panel-header {
+    background-color: #f5f5f5;
+  }
+  
+  .mat-card-content {
+    padding: 16px;
+  }
+  /* Close button in the dialog header */
+.close-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 8px;
+  }
+  
+  /* Employee header styling */
+  .employee-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    width: 100%;
+  }
+  
+  .employee-name {
+    font-weight: bold;
+    color: #007bff; /* Or any color of your choice */
+  }
+  
+  .project-name {
+    font-style: italic;
+    color: #6c757d; /* Or any color of your choice */
+  }
+  
+  .task-card {
+    margin-bottom: 10px;
+  }
+  
+  .mat-expansion-panel-header {
+    background-color: #f5f5f5;
+  }
+  
+  .mat-card-content {
+    padding: 16px;
+  }
+  

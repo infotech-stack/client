@@ -10,16 +10,18 @@ import { NgIf,NgFor } from '@angular/common';
 import { DashboardSubComponent } from './dashboard-sub/dashboard-sub.component';
 import { TaskComponent } from './task/task.component';
 import { TaskStatusComponent } from './task-status/task-status.component';
-import { PagesComponent } from './pages/pages.component';
+import { AdminPanelSettingsComponent } from './admin-panel/admin-panel-settings.component';
 import { SearchEmployeeComponent } from './search-employee/search-employee.component';
 import { TaskReportsComponent } from './task-reports/task-reports.component';
 import { EmployeeComponent } from './employee/employee.component';
 import { EmployeeAttendenceComponent } from './employee-attendence/employee-attendence.component';
 import { MessageComponent } from './message/message.component';
 import { HttpClientModule } from '@angular/common/http';
-import { provideHttpClient, withFetch } from '@angular/common/http';
 import { PickerModule } from "@ctrl/ngx-emoji-mart";
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { LoadingSpinnerComponent } from '../../shared/services/loading-spinner/loadspinner.component';
+import { ConfirmDialogComponent } from '../../shared/dialog/confirm-dialog/confirm-dialog.component';
+import { TaskDetailsDialogComponent } from '../../shared/dialog/task-details-dialog/task-details-dialog.component';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -27,13 +29,16 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
     DashboardSubComponent,
     TaskComponent,
     TaskStatusComponent,
-    PagesComponent,
+    AdminPanelSettingsComponent,
     SearchEmployeeComponent,
     TaskReportsComponent,
     EmployeeComponent,
     EmployeeAttendenceComponent,
     MessageComponent,
-    ContextMenuComponent
+    ContextMenuComponent,
+    LoadingSpinnerComponent,
+    ConfirmDialogComponent,
+    TaskDetailsDialogComponent
   ],
   imports: [
     CommonModule,
@@ -45,8 +50,6 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
     PickerModule,
     NgIf,
     NgFor,
-    
-
   ]
 })
 export class AdminPanelModule { }

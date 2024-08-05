@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="flex justify-center items-center">
-      <span class="text-white hidden md:inline"> RKS INFOTECH EMPLOYEE MANAGEMENT SYSTEM</span>
+      <span class="text-white hidden md:inline "> RKS INFOTECH EMPLOYEE MANAGEMENT SYSTEM</span>
     </div>
     <div class="flex  gap-1">
       <div>
@@ -23,15 +23,15 @@
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item>
-            <mat-icon>account_circle</mat-icon>
+            <mat-icon class="text-danger">account_circle</mat-icon>
             <span>{{username}}</span>
           </button>
           <button mat-menu-item >
-            <mat-icon>person</mat-icon>
+            <mat-icon  class="text-danger">person</mat-icon>
             <span>{{userRole}}</span>
           </button>
-          <button mat-menu-item routerLink="/login">
-            <mat-icon>logout</mat-icon>
+          <button mat-menu-item  (click)="logout()">
+            <mat-icon  class="text-danger">logout</mat-icon>
             <span  >Logout</span>
           </button>
         </mat-menu>

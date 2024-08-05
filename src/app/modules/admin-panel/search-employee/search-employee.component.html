@@ -1,3 +1,4 @@
+<app-loading-spinner *ngIf="is_loading"></app-loading-spinner>
 <div class="container">
   <div class="row mt-1">
     <div class="col-12">
@@ -44,6 +45,10 @@
                   <li *ngIf="employee.employee_name" class="list-group-item d-flex align-content-center gap-2">
                     <mat-icon>person</mat-icon>
                     <strong>Name:</strong> {{ employee.employee_name }}
+                  </li>
+                  <li *ngIf="employee.employee_gender" class="list-group-item d-flex align-content-center gap-2">
+                    <mat-icon>person</mat-icon>
+                    <strong>Gender:</strong> {{ employee.employee_gender }}
                   </li>
                   <li *ngIf="employee.employee_date_of_birth" class="list-group-item d-flex align-content-center gap-2">
                     <mat-icon>calendar_today</mat-icon>

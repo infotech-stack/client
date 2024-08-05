@@ -14,13 +14,14 @@
 //   light.$my-app-light-variants
 // );
 
+
 @import "styles/global";
 @import "styles//variables";
 @import "styles/component-global";
 // @import"styles/mixin";
 @import "tailwindcss/utilities";
 html, body { height: 100%; }
-body { margin: 0; font-family: Poppins, sans-serif; }
+// body { margin: 0; font-family: Poppins, sans-serif; }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

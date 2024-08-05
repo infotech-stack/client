@@ -1,3 +1,4 @@
+<app-loading-spinner *ngIf="is_loading"></app-loading-spinner>
 <div class="container mt-3">
     <div class="row">
       <div class="col-12">
@@ -19,53 +20,69 @@
           </select>
         </div>
         <div>
-          <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)">
+          <!-- <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)"> -->
         </div>
       </div>
       <div class="table-responsive">
-        <table class="table mt-3 table-bordered">
+        <table class="table table-hover table-bordered">
           <thead>
             <tr>
-              <th scope="col">S.N</th>
-              <th scope="col" (click)="onSort('employee_name')">Employee Name</th>
+              <th scope="col">Employee Name</th>
               <th scope="col">Project Name</th>
+              <th scope="col">Project Description</th>
+              <th scope="col">Send By Name</th>
+              <th scope="col">Send To Name</th>
+              <th scope="col">File Attachment</th>
               <th scope="col">Start Date</th>
               <th scope="col">End Date</th>
               <th scope="col">Project Status</th>
-              <th scope="col">Actions</th> 
+              <!-- <th scope="col">Action</th> -->
             </tr>
           </thead>
           <tbody>
-            <ng-container *ngFor="let empDetails of tasks; let i = index">
+            <ng-container *ngFor="let empDetails of tasks">
               <tr *ngFor="let task of empDetails.taskDetails">
-                <td>{{ i + 1 }}</td>
-                <td>{{ empDetails.employee_name }}</td>
-                <td>{{ task.project_name }}</td>
-                <td>{{ task.start_date | date }}</td>
-                <td>{{ task.end_date | date }}</td>
+                <td>{{ empDetails?.employee_name || 'N/A' }}</td>
+                <td>{{ task?.project_name || 'N/A' }}</td>
+                <td>{{ task?.message_description || 'N/A' }}</td>
+                <td>{{ task?.send_by_name || 'N/A' }}</td>
+                <td>{{ task?.send_to_name || 'N/A' }}</td>
                 <td>
-                  <span [ngClass]="getBadgeClass(task.project_status)">{{ task.project_status }}</span>
+                  <div *ngIf="task?.filename && task?.filename.length > 0; else noFile">
+                    <mat-icon (click)="downloadFile(task?.filename)">download</mat-icon>
+                  </div>
+                  <ng-template #noFile>N/A</ng-template>
                 </td>
+                <td>{{ task?.start_date ? (task.start_date | date) : 'N/A' }}</td>
+                <td>{{ task?.end_date ? (task.end_date | date) : 'N/A' }}</td>
                 <td>
-                  <mat-select [(ngModel)]="task.project_status" (selectionChange)="updateTaskStatus(task)">
-                    <mat-option *ngFor="let status of ['done', 'pending', 'on progress']" [value]="status">
-                      {{ status }}
-                    </mat-option>
-                  </mat-select>
+                  <span [ngClass]="getBadgeClass(task?.project_status)">
+                    {{ task?.project_status || 'N/A' }}
+                  </span>
                 </td>
+          
               </tr>
             </ng-container>
           </tbody>
         </table>
       </div>
             <!-- Pagination Controls -->
-        <div class="d-flex justify-content-evenly">
-          <button class="btn btn-primary" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-         <div class="d-flex justify-content-center align-content-center">
-          <span>Page {{ currentPage }} of {{ totalPages }}</span>
-         </div>
-          <button class="btn btn-primary" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
-        </div>
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage - 1)" tabindex="-1" aria-disabled="currentPage === 1">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item"><span class="page-link">Page {{ currentPage }} of {{ totalPages }}</span></li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            
     </div>
   </div>
   </div>

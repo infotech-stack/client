@@ -1,15 +1,15 @@
-import {
-    AbstractControl,
-    ValidationErrors,
-    ValidatorFn,
-  } from '@angular/forms';
-  
-  export const confirmPasswordValidator: ValidatorFn = (
-    control: AbstractControl
-  ): ValidationErrors | null => {
-    console.log('sdsa');
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+
+export function passwordMatchValidator(password: string, confirmPassword: string): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const passwordControl = control.get(password);
+    const confirmPasswordControl = control.get(confirmPassword);
+
+    if (passwordControl && confirmPasswordControl && passwordControl.value !== confirmPasswordControl.value) {
+      confirmPasswordControl.setErrors({ notMatching: true });
+      return { notMatching: true };
+    }
     
-    return control.value.password1 === control.value.password2
-      ? null
-      : { PasswordNoMatch: true };
+    return null;
   };
+}

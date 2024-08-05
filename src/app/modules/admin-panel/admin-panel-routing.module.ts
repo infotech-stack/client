@@ -7,29 +7,35 @@ import { SearchEmployeeComponent } from './search-employee/search-employee.compo
 import { EmployeeComponent } from './employee/employee.component';
 import { TaskComponent } from './task/task.component';
 import { TaskStatusComponent } from './task-status/task-status.component';
-import { PagesComponent } from './pages/pages.component';
+import { AdminPanelSettingsComponent } from './admin-panel/admin-panel-settings.component';
 import { TaskReportsComponent } from './task-reports/task-reports.component';
 import { EmployeeAttendenceComponent } from './employee-attendence/employee-attendence.component';
 import { MessageComponent } from './message/message.component';
+import { AuthGuard } from '../../shared/services/auth/auth-guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  {path:'login',component:LoginComponent},
-  {path:'dashboard',component:DashboardComponent,children:[
-    {path:'',redirectTo:'dashboard-sub',pathMatch:'full'},
-    {path:'dashboard-sub',component:DashboardSubComponent},
-    {path:'attendance',component:EmployeeAttendenceComponent},
-    {path:'search-employee',component:SearchEmployeeComponent},
-    {path:'employee',component:EmployeeComponent},
-    {path:'task',component:TaskComponent},
-    {path:'task-status',component:TaskStatusComponent},
-    {path:'pages',component:PagesComponent},
-    {path:'task-report',component:TaskReportsComponent},
-    {path:'message',component:MessageComponent},
-    
-  ]}
-  
+  { path: '', redirectTo: '/login', pathMatch: 'full' }, 
+  { path: 'login', component: LoginComponent }, 
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent, 
+    canActivate: [AuthGuard], 
+    children: [
+      { path: '', redirectTo: 'dashboard-sub', pathMatch: 'full' }, 
+      { path: 'dashboard-sub', component: DashboardSubComponent },
+      { path: 'attendance', component: EmployeeAttendenceComponent },
+      { path: 'search-employee', component: SearchEmployeeComponent },
+      { path: 'employee', component: EmployeeComponent },
+      { path: 'task', component: TaskComponent },
+      { path: 'task-status', component: TaskStatusComponent },
+      { path: 'settings', component: AdminPanelSettingsComponent },
+      { path: 'task-report', component: TaskReportsComponent },
+      { path: 'message', component: MessageComponent }
+    ]
+  },
+  { path: '**', redirectTo: '/login' } 
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

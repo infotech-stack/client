@@ -43,7 +43,6 @@ export class ApiService {
     return this.http.post<any>(`${environment.getEmployee}?empId=${empId}&current_page=${currentPage}&page_size=${pageSize}`,{roles});
   }
   insertEmployee(registerDetails: any): Observable<any> {
-    console.log(registerDetails, 'ser');
 
     return this.http.post<any>(`${environment.insertEmployee}`, registerDetails);
   }
@@ -59,12 +58,12 @@ export class ApiService {
   getEmployeeAccess(){
     return this.http.get<any>(`${environment.getEmployeeAccess}`);
   }
+  employeeForMessage(roles:string[]){
+    return this.http.get<any>(`${environment.employeeForMessage}?roles=${roles}`);
+  }
   //EMPLOYTEE ATTENDANCE
   getEmployeeAttendance() {
     return this.http.get<any>(`${environment.getEmployeeAttendance}`);
-
-
-
   }
   //TASK ASSSIGN
   // assignTask(formData:FormData){
@@ -76,9 +75,13 @@ export class ApiService {
   taskAssignToEmployee(employeeData: any) {
     return this.http.post<any>(`${environment.assignTask}`, employeeData);
   }
-  updatetask(task_id:number,empId:number,taskDetails:any){
-    return this.http.put<any>(`${environment.updatetask}?task_id=${task_id}&empId=${empId}`,taskDetails);
+  // updatetask(task_id:number,empId:number,taskDetails:any){
+   
+  //   return this.http.put<any>(`${environment.updatetask}?task_id=${task_id}&empId=${empId}`,formData);
 
+  // }
+  updatetask(task_id:number,selected_empid:number,message_id:number,formData:any){
+    return this.http.put<any>(`${environment.updatetask}?task_id=${task_id}&selected_empid=${selected_empid}&message_id=${message_id}`,formData);
   }
   deleteTask(task_id:number,empId:number){
     return this.http.put<any>(`${environment.deleteTask}?task_id=${task_id}&empId=${empId}`,'');
@@ -89,36 +92,65 @@ export class ApiService {
   }
   //TASK REPORTS
   taskReports(empId:number,taskId:number,status:any){
-    console.log(status);
+
     return this.http.put(`${environment.taskReports}?empId=${empId}&task_id=${taskId}`,status);
   }
   //MESSAGE
   getFile(fileName: string): Observable<any> {
-    console.log(fileName,'filname');
+
     
     return this.http.get(`http://localhost:3000/api/employee-register/getFile?file=${fileName}`, { responseType: 'blob', observe: 'response' });
   }
   uploadFile(formData: FormData){
+    
    return this.http.post<any>(`${environment.uploadFile}`,formData);
   }
-  sendMessage(employeeId: number, message: string, files: File[]): Observable<any> {
+  // sendMessage(projectName:string,startDate:any,endDate:any,projectStatus:any,assignTo:any[],messageDescription:string,files: File[]): Observable<any> {
+  //   const formData = new FormData();
+  //   formData.append('projectName', employeeId.toString());
+  //   formData.append('message', message);
+  //   files.forEach(file => {
+  //     formData.append('files', file);
+  //   });
+
+  //   return this.http.post<any>(`${environment.uploadFile}`, formData);
+  // }
+  sendMessage(projectName:string,startDate:any,endDate:any,projectStatus:any,assignTo:any[],messageDescription:string,files: File[]): Observable<any> {
     const formData = new FormData();
-    formData.append('employeeId', employeeId.toString());
-    formData.append('message', message);
-    files.forEach(file => {
-      formData.append('files', file);
-    });
+    formData.append('projectName', projectName);
+    formData.append('startDate', startDate);
+    formData.append('endDate', endDate);
+    formData.append('projectStatus', projectStatus);
+    formData.append('assignTo', JSON.stringify(assignTo));
+    formData.append('messageDescription', messageDescription);
+
+    if (files && files.length > 0) {
+      files.forEach(file => {
+        formData.append('files', file);
+      });
+    }
+
 
     return this.http.post<any>(`${environment.uploadFile}`, formData);
   }
+
   postMessage(messageDetails:any){
+ 
+    
     return this.http.post<any>(`${environment.postMessage}`,messageDetails);
   }
   getMessage(empId:number): Observable<any>{
     this.empId=empId;
    return this.http.get<any>(`${environment.getMessage}?empId=${empId}`)
   }
+//SETTINGS 
 
+  resetPassword(empId:number,resetDetails:any){
+    return this.http.post<any>(`${environment.resetPassword}?empId=${empId}`,resetDetails)
+  }
+  employeeFilter(empId:number,login_date_from:any,login_date_to:any){
+    return  this.http.get<any>(`${environment.employeeFilter}?empId=${empId}&login_date_from=${login_date_from}&login_date_to=${login_date_to}`);
+  }
   //WEBSOCKET 
   // sendSocketMessage(message:any){
   //   this.socket.emit('sendMessage',message)

@@ -22,9 +22,10 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/platform-server": "^17.3.0",
     "@angular/router": "^17.3.0",
-    "@angular/service-worker": "^17.3.0",
+    "@angular/service-worker": "^17.3.12",
     "@angular/ssr": "^17.3.8",
     "@ctrl/ngx-emoji-mart": "^9.2.0",
+    "@popperjs/core": "^2.11.8",
     "@types/chart.js": "^2.9.41",
     "@types/crypto-js": "^4.2.2",
     "@types/pdfmake": "^0.2.9",
@@ -41,6 +42,7 @@
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.7.5",
     "tslib": "^2.3.0",
+    "web-push": "^3.6.7",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {

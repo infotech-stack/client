@@ -1,0 +1,42 @@
+<h1 mat-dialog-title style="background-color: rgb(96 165 250)">
+    Task Details
+    <!-- Close icon -->
+    <button mat-icon-button (click)="onNoClick()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </h1>
+  <div mat-dialog-content>
+    <!-- Show "No Data Found" message if no tasks are present -->
+    <ng-container *ngIf="data.tasks.length === 0; else taskList">
+      <p>No Data Found</p>
+    </ng-container>
+  
+    <!-- Display task details if tasks are present -->
+    <ng-template #taskList>
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let task of data.tasks">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <div class="employee-header">
+                <span class="employee-name">{{ task.send_to_name }}</span> - 
+                <span class="project-name">{{ task.project_name }}</span>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-card class="task-card">
+            <mat-card-content>
+              <p><strong>Task Name:</strong> {{ task.project_name }}</p>
+              <p><strong>Status:</strong> {{ task.project_status }}</p>
+              <p><strong>Description:</strong> {{ task.message_description }}</p>
+              <p><strong>Start Date:</strong> {{ task.start_date | date }}</p>
+              <p><strong>End Date:</strong> {{ task.end_date | date }}</p>
+            </mat-card-content>
+          </mat-card>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-template>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button class="btn btn-danger" (click)="onNoClick()">Close</button>
+  </div>
+  

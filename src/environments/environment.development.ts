@@ -11,11 +11,13 @@ export const environment = {
     removeEmployee:`http://localhost:3000/api/employee-register/remove-employee`,
     getEmployeeRole:`http://localhost:3000/api/employee-register/get-employee-role`,
     getEmployeeAccess:`http://localhost:3000/api/employee-register/get-employee-access`,
+    employeeForMessage:`http://localhost:3000/api/employee-register/employee-for-message`,
     //LOGIN 
     login:`http://localhost:3000/api/employee-register/login`,
     logout:`http://localhost:3000/api/employee-register/logout`,
     //EMPLOYEE ATTENDANCE
     getEmployeeAttendance:`http://localhost:3000/api/employee-register/employee-attendance`,
+    employeeFilter:`http://localhost:3000/api/employee-register/employee-filter`,
     //TASK ASSIGN
     gettaskByRole:`http://localhost:3000/api/employee-register/get-Tasks-ByRole`,
     assignTask:`http://localhost:3000/api/employee-register/task-assign-to-employee`,
@@ -31,8 +33,13 @@ export const environment = {
     getMessage:`http://localhost:3000/api/employee-register/get-message`,
     //WEBSOCKET URL
     wsUrl:`http://localhost:4000/messages`,
-    postWebSocketMesage:`http://localhost:4000/messages/post-message`,
+    postWebSocketMesage:`http://localhost:4000/messages/post-message`,      
     getWebSocketMesage:`http://localhost:4000/messages/get-message`,
+    updateWebsocketMessage:`http://localhost:4000/messages/update-message`,
+    deleteWebsocketMessage:`http://localhost:4000/messages/delete-message`,
     websocketUploadFile:`http://localhost:4000/messages/upload-files`,
     websocketDownloadFile:`http://localhost:4000/messages/download-files`,
+    //SETTINGS
+    resetPassword:`http://localhost:3000/api/employee-register/reset-password`,
+
 };

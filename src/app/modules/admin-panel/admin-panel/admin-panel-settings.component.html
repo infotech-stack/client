@@ -1,0 +1,46 @@
+<div class="container ">
+  <app-loading-spinner *ngIf="is_loading"></app-loading-spinner>
+    <div class="row mt-1">
+        <div class="col-12">
+          <div class="header-bar">
+            <h2 class="mb-0">ADMIN PANEL SETTINGS</h2>
+          </div>
+        </div>
+      </div>
+    <div class="row justify-content-center mt-3">
+      <div class="col-md-6">
+        <div class="card shadow-lg">
+          <div class="card-body">
+            <h2 class="text-center mb-4 fw-bold">Reset Password</h2>
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+              <div class="form-group mb-3">
+                <label for="username" class="fw-bold">Username</label>
+                <input type="text" class="form-control" id="username" formControlName="username" placeholder="Enter username">
+                <div *ngIf="formControls['username'].invalid && (formControls['username'].dirty || formControls['username'].touched)" class="text-danger">
+                    <div *ngIf="formControls['username'].errors?.['required']">UserName is required.</div>
+                  </div>
+              </div> 
+              <div class="form-group mb-3">
+                <label for="password" class="fw-bold">Password</label>
+                <input type="password" class="form-control" id="password" formControlName="password" placeholder="Enter password">
+                <div *ngIf="formControls['password'].invalid && (formControls['password'].dirty ||formControls['password'].touched)" class="text-danger">
+                    <div *ngIf="formControls['password'].errors?.['required']"> Password is required and must be at least 6 characters long.</div>
+                  </div>
+              </div>
+              <div class="form-group mb-3">
+                <label for="confirmPassword" class="fw-bold">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm password">
+                <div *ngIf="formControls['confirmPassword'].invalid && (formControls['confirmPassword'].dirty || formControls['confirmPassword'].touched)" class="text-danger">
+                    <div *ngIf="formControls['confirmPassword'].errors?.['required']">Confirm Password is required.</div>
+                    <div *ngIf="registerForm.controls['confirmPassword'].errors?.['notMatching']">Passwords do not match</div>
+                  </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" [disabled]="registerForm.invalid">Reset Password</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  

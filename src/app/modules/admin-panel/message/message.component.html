@@ -199,25 +199,35 @@
       <img class="rounded" src="https://th.bing.com/th/id/R.1a16b384d527fe609dbe25218b162d2f?rik=p6I68csK9JTkbA&riu=http%3a%2f%2fwww.pngmart.com%2ffiles%2f11%2fChat-Logo-PNG-Pic.png&ehk=H%2bgd0iuCU0QpHu%2bFxpBNfUiIKVRdB2EmBLjNpiFrHqA%3d&risl=&pid=ImgRaw&r=0" alt="logo" style="width: 50px; height: 50px;">
       <h3 class="ml-3 mb-0">Chat Application</h3>
     </div>
-    <button mat-icon-button class=" d-md-none" (click)="toggleSidebar()">
-    <mat-icon> menu</mat-icon> 
+    <div *ngIf="selectedContact" class="d-flex align-items-center">
+      <div class="avatar mr-3 d-flex align-items-center justify-content-center bg-primary text-white rounded-circle" style="width: 40px; height: 40px;">
+        {{ selectedEmployeeObj.employee_name.charAt(0) }}
+      </div>
+      <span>{{ selectedEmployeeObj.employee_name }}</span>
+    </div>
+    <button mat-icon-button class="d-md-none" (click)="toggleSidebar()">
+      <mat-icon>menu</mat-icon>
     </button>
-    <button mat-icon-button class=" d-none d-md-block">
-      
+    <!-- <button mat-icon-button class="d-none d-md-block">
       <mat-icon>logout</mat-icon>
-    </button>
+    </button> -->
   </div>
 
   <div class="d-flex flex-1">
     <!-- Sidebar -->
-    <aside [ngClass]="{'d-none': !sidebarVisible, 'd-md-block': sidebarVisible}" class="sidebar bg-light p-4  min-vh-70" style="height: 75vh;">
+    <aside [ngClass]="{'d-none': !sidebarVisible, 'd-md-block': sidebarVisible}" class="sidebar bg-light p-4 min-vh-70" style="height: 75vh;">
       <h2 class="h5 font-weight-bold mb-4 sticky-top">Contacts</h2>
       <ul class="list-unstyled overflow-scroll h-[65vh]">
-        <li *ngFor="let contact of employees" class="d-flex align-items-center p-2 rounded hover-bg-light cursor-pointer" (click)="selectContact(contact)">
-          <div class="avatar mr-3 d-flex align-items-center justify-content-center bg-primary text-white rounded-circle" style="width: 40px; height: 40px;">
-            {{ contact.employee_name.charAt(0) }}
+        <li *ngFor="let contact of employees" class="d-flex flex-column p-2 rounded hover-bg-light cursor-pointer" (click)="selectContact(contact)">
+          <div class="d-flex align-items-center">
+            <div class="avatar mr-3 d-flex align-items-center justify-content-center bg-primary text-white rounded-circle" style="width: 40px; height: 40px;">
+              {{ contact.employee_name.charAt(0) }}
+            </div>
+            <div class="d-flex flex-column">
+              <span>{{ contact.employee_name }}</span>
+              <small class="text-muted">{{ contact.latestMessage }}</small>
+            </div>
           </div>
-          <span>{{ contact.employee_name }}</span>
         </li>
       </ul>
     </aside>
@@ -225,21 +235,36 @@
     <!-- Main Content -->
     <main class="flex-1 p-4 bg-gray-100" style="height: 80vh;">
       <div *ngIf="selectedContact; else selectUserMessage" class="h-100 d-flex flex-column">
-        <div #chatWindow  class="chat-window flex-grow-1 overflow-auto">
-          <div *ngFor="let message of messages" class="d-flex mb-2" #latestMessage [ngClass]="{'justify-content-end': message.sender_id === empId, 'justify-content-start': message.sender_id !== empId} " >
+        <div  #chatWindow class="chat-window flex-grow-1 overflow-auto">
+          <!-- [matMenuTriggerFor]="contextMenu"  -->
+          <div *ngFor="let message of messages" class="d-flex mb-2" [ngClass]="{'justify-content-end': message.sender_id === empId, 'justify-content-start': message.sender_id !== empId}"  (contextmenu)="onRightClick($event, message)">
             <div [ngClass]="{'bg-primary text-white': message.sender_id === empId, 'bg-white': message.sender_id !== empId}" class="p-2 rounded">
+              <mat-menu #contextMenu="matMenu">
+                <button mat-menu-item (click)="editMessage(selectedMessage)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="deleteMessage(selectedMessage)" class="text-danger">
+                  <mat-icon class="text-danger">delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+                <button mat-menu-item (click)="copyMessage(selectedMessage)">
+                  <mat-icon>content_copy</mat-icon>
+                  <span>Copy</span>
+                </button>
+              </mat-menu>
+              
               <div *ngIf="message.fileUrl">
-                <img [src]="message.fileUrl" alt="file">
-                <a [href]="message.fileUrl" target="_blank" class="text-white w-[60px] h-[60px]">{{ message.message }}</a>
+                <img [src]="message.fileUrl" alt="file" style="max-width: 200px;">
+                <a href="javascript:void(0)" class="text-danger" (click)="download(message.fileName)">{{ message.message }}</a>
               </div>
               <div *ngIf="!message.fileUrl">
-                {{ message.message }} <span class="">{{ formatTimestamp(message.timestamp) }}</span>
+                {{ message.message }} <span class="text-muted">{{ formatTimestamp(message.timestamp) }}</span>
               </div>
-             
             </div>
           </div>
         </div>
-        <div class="d-flex mt-3 gap-2 " >
+        <div class="d-flex mt-3 gap-2">
           <mat-menu #fileMenu="matMenu">
             <button mat-menu-item (click)="selectFileType('image')">
               <mat-icon>image</mat-icon> Image
@@ -257,40 +282,38 @@
               <mat-icon>contact_phone</mat-icon> Contact
             </button>
           </mat-menu>
-          
+
           <!-- File upload trigger button -->
           <button mat-icon-button [matMenuTriggerFor]="fileMenu">
             <mat-icon>attach_file</mat-icon>
           </button>
-          
+
           <!-- File input -->
-          <input type="file" (change)="onSelectFiles($event)" [attr.accept]="fileType" style="display: none;" #fileInput />
-          
+          <input type="file" (change)="onSelectFiles($event)" [attr.accept]="fileType" multiple style="display: none;" #fileInput />
+
           <button mat-icon-button (click)="isEmojiPickerVisible = !isEmojiPickerVisible">
             <mat-icon>sentiment_satisfied_alt</mat-icon>
           </button>
-          <br /><emoji-mart
-            class="emoji-mart position-absolute bottom-[7rem] "
-            *ngIf="isEmojiPickerVisible"
-            (emojiSelect)="addEmoji($event)"
-            title="Choose your emoji"
-          ></emoji-mart>
+          <br />
+          <emoji-mart class="emoji-mart position-absolute bottom-[7rem]" *ngIf="isEmojiPickerVisible" (emojiSelect)="addEmoji($event)" title="Choose your emoji"></emoji-mart>
           <input type="text" class="form-control" [(ngModel)]="newMessage" placeholder="Type your message...">
           <button mat-icon-button class="btn btn-primary ml-2" (click)="sendMessage()">
             <mat-icon>send</mat-icon>
           </button>
-  
         </div>
       </div>
       <ng-template #selectUserMessage>
         <div class="d-flex justify-content-center align-items-center h-100">
-          <h4>Select a user to message</h4>
+          <h4>Select a user from left side</h4>
         </div>
       </ng-template>
     </main>
   </div>
  
 </div>
+
+
+
 
 
 

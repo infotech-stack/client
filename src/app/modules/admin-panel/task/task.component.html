@@ -1,4 +1,6 @@
+
 <div class="container">
+  <app-loading-spinner *ngIf="is_loading"></app-loading-spinner>
   <div class="row mt-1">
     <div class="col-12">
       <div class="header-bar">
@@ -46,10 +48,9 @@
             <div class="col-12 col-md-6">
               <div class="mb-3">
                 <label for="projectStatus" class="form-label fw-bold">Project Status</label>
-                <select id="projectStatus" class="form-select" formControlName="projectStatus" >
+                <select id="projectStatus" class="form-select" formControlName="projectStatus">
                   <option value="">Select project status</option>
-                  <option value="In Progress" *ngFor="let status of taskStatus" [value]="status">{{status}}</option>
-                  
+                  <option *ngFor="let status of taskStatus" [value]="status">{{status}}</option>
                 </select>
                 <div *ngIf="taskForm.controls['projectStatus'].invalid && (taskForm.controls['projectStatus'].dirty || taskForm.controls['projectStatus'].touched)" class="text-danger">
                   <div *ngIf="taskForm.controls['projectStatus'].errors?.['required']">Project Status is required.</div>
@@ -57,18 +58,41 @@
               </div>
             </div>
           </div>
-  
+          <div class="row">
+            <!-- Fourth Row: File Attachment -->
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label for="fileAttachment" class="form-label fw-bold">File Attachment</label>
+                <!-- <div *ngIf="selectedFiles?.length > 0">
+                  <ul>
+                    <li *ngFor="let file of selectedFiles">{{ file?.name }}</li>
+                  </ul>
+                </div> -->
+                <input type="file" id="fileAttachment" class="form-control" formControlName="fileAttachment" multiple  (change)="onSelectFiles($event)">
+                <div *ngIf="taskForm.controls['fileAttachment'].invalid && (taskForm.controls['fileAttachment'].dirty || taskForm.controls['fileAttachment'].touched)" class="text-danger">
+                  <div *ngIf="taskForm.controls['fileAttachment'].errors?.['required']">File Attachment is required.</div>
+                </div>
+              </div>
+              
+            </div>
+                   <!-- Fifth Row: Message Description -->
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label for="messageDescription" class="form-label fw-bold">Message Description</label>
+                <textarea id="messageDescription" class="form-control" formControlName="messageDescription" rows="1" placeholder="Enter message description"></textarea>
+                <div *ngIf="taskForm.controls['messageDescription'].invalid && (taskForm.controls['messageDescription'].dirty || taskForm.controls['messageDescription'].touched)" class="text-danger">
+                  <div *ngIf="taskForm.controls['messageDescription'].errors?.['required']">Message Description is required.</div>
+                </div>
+              </div>
+            </div>
+          </div>    
           <div class="row">
             <!-- Third Row: Assign To (Employee Selection) -->
             <div class="col-12">
               <div class="mb-3">
                 <label for="assignTo" class="form-label fw-bold">Assign To</label>
-                <!-- <select id="assignTo" class="form-select" multiple (change)="getEmployeeId($event)" formControlName="assignTo">
-                  <option value="0">All</option>
-                  <option *ngFor="let employee of employees" [value]="employee.empId">{{ employee.employee_name }}</option>
-                </select> -->
                 <mat-form-field appearance="outline" class="w-100">
-                  <mat-select id="assignTo"  formControlName="assignTo" multiple placeholder="Select employee">
+                  <mat-select id="assignTo" formControlName="assignTo" multiple placeholder="Select employee">
                     <mat-option [value]="'all'">All</mat-option>
                     <mat-option *ngFor="let role of employees" [value]="role.employee_name">
                       {{role.employee_name}}
@@ -82,9 +106,10 @@
             </div>
           </div>
   
+         
           <div class="row justify-content-center">
             <div class="col-12 text-center">
-              <button type="submit" class="btn btn-primary" *ngIf="addFlag" (click)="taskAssign()">Assign Task</button>
+              <button type="submit" class="btn btn-primary" *ngIf="addFlag" [disabled]="taskForm.invalid" (click)="onSubmit()">Assign Task</button>
               <button type="submit" class="btn btn-warning" *ngIf="editFlag" (click)="updateTask()">Edit Task</button>
             </div>
           </div>
@@ -92,6 +117,7 @@
       </div>
     </div>
   </div>
+  
   <div class="container mt-3">
     <div class="card" style="border-top: 3px solid blue;">
       <div class="card-body">
@@ -104,7 +130,7 @@
             </select>
           </div>
           <div>
-            <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)">
+            <!-- <input type="text" class="form-control" placeholder="Search..." (input)="onSearchChange($event)"> -->
           </div>
         </div>
         <div class="table-responsive">
@@ -132,7 +158,8 @@
                   <td>
                     <div class="d-flex gap-2">
                       <button class="btn btn-sm btn-warning" (click)="editTask(task, empDetails)">Edit</button>
-                      <button class="btn btn-sm btn-danger" (click)="deleteTask(task, empDetails)">Delete</button>
+         
+                      <button class="btn btn-sm btn-danger" (click)="openDialog(task, empDetails)">Delete</button>
                     </div>
                   </td>
                 </tr>
@@ -141,13 +168,22 @@
           </table>
         </div>
         <!-- Pagination Controls -->
-        <div class="d-flex justify-content-between">
-          <button class="btn btn-primary" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-          <div class="d-flex justify-content-center align-content-center">
-            <span>Page {{ currentPage }} of {{ totalPages }}</span>
-           </div>
-          <button class="btn btn-primary" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
-        </div>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage - 1)" tabindex="-1" aria-disabled="currentPage === 1">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item"><span class="page-link">Page {{ currentPage }} of {{ totalPages }}</span></li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        
       </div>
     </div>
   </div>

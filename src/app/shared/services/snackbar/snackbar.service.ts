@@ -6,6 +6,7 @@ export class SnackBarService {
     duration: 3000,
     horizontalPosition: 'center',
     verticalPosition: 'bottom',
+    
   };
 
   constructor(public snackBar: MatSnackBar) {}

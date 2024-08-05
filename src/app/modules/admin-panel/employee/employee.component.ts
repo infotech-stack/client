@@ -3,16 +3,16 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators }
 import { ApiService } from '../../../shared/services/api/api.service';
 import { DataSharingService } from '../../../shared/services/data-sharing/data-sharing.service';
 import * as CryptoJS from 'crypto-js';
-import { CustomSpinnerService } from '../../../shared/services/custom-spinner/custom-spinner.service';
-import { confirmPasswordValidator } from '../../../validator/confirm-password.validator';
+import { passwordMatchValidator } from '../../../validator/confirm-password.validator';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared/dialog/confirm-dialog/confirm-dialog.component';
+import { SnackBarService } from '../../../shared/services/snackbar/snackbar.service';
 @Component({
   selector: 'app-employee',
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss'
 })
 export class EmployeeComponent implements OnInit {
-
-
   //* --------------------------  Start  -----------------------------------*//
 
   //* -----------------------  Decorated Methods  --------------------------*//
@@ -77,22 +77,24 @@ export class EmployeeComponent implements OnInit {
   editBtnFlag: boolean = false;
   addBtnFlag: boolean = true;
   employeeId!: number;
-  totalPages: number=1;
+  totalPages: number = 1;
   currentPage = 1;
-  pageSize:any = 5;
+  pageSize: any = 5;
   sortField = 'employee_name';
   sortOrder = 'ASC';
   search = '';
-  // EmployeeAccess: string[] = ['Dashboard', 'Message', 'Employee', 'Task', 'Task Status', 'Pages', 'Search Employee', 'Task Reports', 'Employee Attendance'];
-  employeeAccess:any;
-  // EmployeeRole: string[] = ['Admin', 'Team Leader', 'Senior Developer', 'Junior Developer', 'Customer Support', 'Digital Marketing'];
-  employeeRole:any;
+  alertSuccess: boolean = false;
+  alertError: boolean = false;
+  alertMessage: string = '';
+  employeeAccess: any;
+  employeeRole: any;
+  is_loading: boolean = false;
   //* ---------------------------  Constructor  ----------------------------*//
-  constructor(private fb: FormBuilder, private _apiService: ApiService, private _dataSharing: DataSharingService, private _customSpinner: CustomSpinnerService) {
+  constructor(private fb: FormBuilder, private _apiService: ApiService, public _dialog: MatDialog, private _snakbar: SnackBarService) {
     this.employeeForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      mobileno: ['', [Validators.required, Validators.pattern('^((\\+91-?)|0)?[0-9]{10}$')]],
+      mobileno: ['', [Validators.required, Validators.pattern('^((\\+91-?)|0)?[0-9]{10}$'), Validators.maxLength(10)]],
       dateofbirth: ['', Validators.required],
       dateofjoin: ['', Validators.required],
       religion: ['', Validators.required],
@@ -104,25 +106,14 @@ export class EmployeeComponent implements OnInit {
       access: ['', Validators.required],
       experience: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
-    },{
-      Validators:this.checkPasswords
+      confirmPassword: ['', Validators.required],
+      gender: ['', [Validators.required]]
+    }, {
+      validators: passwordMatchValidator('password', 'confirmPassword')
     });
   }
-
   //* -------------------------  Lifecycle Hooks  --------------------------*//
   ngOnInit(): void {
-
-    // this._dataSharing.getEmployeeDatils.subscribe({
-    //   next: (data) => {
-    //     this.empId=data.empId;
-    //     this.role=data.employee_role;
-    //     this.getEmployee();
-    //   },
-    //   error: (err) => {
-    //     throw err;
-    //   }
-    // })
     const encryptedEmployeeFromStorage = sessionStorage.getItem('encryptedEmployee');
     const decryptedEmployee = this.decryptData(encryptedEmployeeFromStorage);
     this.empId = decryptedEmployee.empId;
@@ -149,31 +140,33 @@ export class EmployeeComponent implements OnInit {
       employee_experience: this.employeeForm.controls['experience'].value,
       employee_role: this.employeeForm.controls['role'].value,
       employee_access: this.employeeForm.controls['access'].value,
+      employee_gender: this.employeeForm.controls['gender'].value
 
     }
-  console.log(registerObj,'register');
-  
- 
-      this._apiService.insertEmployee(registerObj).subscribe({
-        next: (res) => {
-          this._customSpinner.close();
-          console.log(res);
-          this.getEmployee();
-          this.employeeForm.reset();
-        },
-        error: (err) => {
-          this._customSpinner.close();
-          throw err;
-        }
-      })
- 
+    this.is_loading = true;
+    this._apiService.insertEmployee(registerObj).subscribe({
+      next: (res) => {
+        this.is_loading = false;
+     
+        this.getEmployee();
+        this.employeeForm.reset();
+      },
+      error: (err) => {
+        this.is_loading = false;
+        throw err;
+      }
+    })
+
 
   }
   getEmployee() {
     const limit = this.pageSize === 'all' ? -1 : Number(this.pageSize);
-    this._apiService.getEmployee(this.empId, this.role,this.currentPage, this.pageSize).subscribe({
+    this.is_loading = true;
+    this._apiService.getEmployee(this.empId, this.role, this.currentPage, this.pageSize).subscribe({
       next: (res) => {
-        console.log(res);
+     
+        this._snakbar.success('Data Fetch successfully');
+        this.is_loading = false;
         this.employeeList = res.data;
         this.employeeForm.reset();
         this.totalPages = limit === -1 ? 1 : Math.ceil(res.total / Number(this.pageSize));
@@ -181,13 +174,14 @@ export class EmployeeComponent implements OnInit {
         this.addBtnFlag = true;
       },
       error: (err) => {
+        this._snakbar.error('Something Went Wrong');
+        this.is_loading = false;
         throw err;
       }
     })
   }
   editUser(item: any) {
     this.employeeId = item.empId;
-
     const dateOfJoin = new Date(item.employee_dateofjoin).toISOString().split('T')[0];
     const dateofBirth = new Date(item.employee_dateofjoin).toISOString().split('T')[0];
     this.employeeForm.patchValue({
@@ -205,18 +199,23 @@ export class EmployeeComponent implements OnInit {
       dateofbirth: dateofBirth,
       religion: item.employee_religion,
       education: item.employee_education,
-      experience: item.employee_experience
+      experience: item.employee_experience,
+      gender: item.employee_gender
     });
     this.editBtnFlag = true;
     this.addBtnFlag = false;
-    console.log(this.employeeForm);
+  
   }
+
   deleteUser(item: any) {
+    this.is_loading = true;
     this._apiService.removeEmployee(item.empId).subscribe({
       next: (res) => {
         this.getEmployee();
+        this.is_loading = false;
       },
       error: (err) => {
+        this.is_loading = false;
         throw err;
       }
     })
@@ -238,23 +237,27 @@ export class EmployeeComponent implements OnInit {
       employee_experience: this.employeeForm.controls['experience'].value,
       employee_role: this.employeeForm.controls['role'].value,
       employee_access: this.employeeForm.controls['access'].value,
+      employee_gender: this.employeeForm.controls['gender'].value
     }
-  
-    
- if (this.employeeForm.valid) {
-  console.log(editedObj,'edit');
-  this._apiService.updateEmployee(this.employeeId, editedObj).subscribe({
-    next: (res) => {
-      console.log(res);
-      this.getEmployee();
-    },
-    error: (err) => {
-      throw err;
+
+
+    if (this.employeeForm.valid) {
+
+      this.is_loading = true;
+      this._apiService.updateEmployee(this.employeeId, editedObj).subscribe({
+        next: (res) => {
+       
+          this.is_loading = false;
+          this.getEmployee();
+        },
+        error: (err) => {
+          this.is_loading = false;
+          throw err;
+        }
+      });
     }
-  });
- }
   }
-  getEmployeeRole(){
+  getEmployeeRole() {
     this._apiService.getEmployeeRole().subscribe({
       next: (res) => {
         this.employeeRole = res.data;
@@ -264,7 +267,7 @@ export class EmployeeComponent implements OnInit {
       }
     });
   }
-  getEmployeeAccess(){
+  getEmployeeAccess() {
     this._apiService.getEmployeeAccess().subscribe({
       next: (res) => {
         this.employeeAccess = res.data;
@@ -272,9 +275,12 @@ export class EmployeeComponent implements OnInit {
       error: (err) => {
         throw err;
       }
-    });  }
+    });
+  }
   //* --------------------------  Public methods  --------------------------*//
-  get formControls() { return this.employeeForm.controls; }
+  get formControls() {
+    return this.employeeForm.controls;
+  }
   checkPasswords(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
@@ -306,7 +312,7 @@ export class EmployeeComponent implements OnInit {
     this.getEmployee();
   }
   onSearchChange(newSearch: any) {
-    const element=(newSearch.target as HTMLSelectElement).value;
+    const element = (newSearch.target as HTMLSelectElement).value;
     this.search = element;
     this.currentPage = 1; // Reset to the first page
     this.getEmployee();
@@ -315,7 +321,19 @@ export class EmployeeComponent implements OnInit {
     this.currentPage = 1; // Reset to first page on new search
     this.getEmployee();
   }
- 
+  openDialog(item: any) {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+      data: { employee_name: item.employee_name }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteUser(item);
+
+      }
+    });
+  }
   //! -------------------------------  End  --------------------------------!//
 
 }
